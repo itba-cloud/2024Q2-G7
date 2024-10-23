@@ -1,0 +1,60 @@
+.title {
+    font-size: xx-large !important;
+    font-weight: 600 !important;
+    margin-bottom: 10px !important;
+}
+
+.subtitle {
+    font-size: x-large !important;
+    margin: 0 !important;
+}
+
+.form-group {
+    margin: 10px 0 !important;
+}
+
+.btn-eye {
+    border-radius: 0 8px 8px 0 !important;
+    background-color: rgba(128, 128, 128, 0.4) !important;
+    border-color: rgba(128, 128, 128, 0.8) !important;
+    color: black !important;
+}
+
+.btn-eye:hover, .btn-eye:focus {
+    transition: 150ms linear !important;
+    background-color: rgba(128, 128, 128, 0.4) !important;
+    border-color: rgba(128, 128, 128, 0.8) !important;
+    color: black !important;
+}
+
+.btn-create-account, .btn-login {
+    font-size: large !important;
+    background-color: var(--primary-color) !important;
+    color: white !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 8px !important;
+    padding: 12px 16px !important;
+    font-weight: bold !important;
+}
+
+.btn-create-account:hover, .btn-login:hover,
+.btn-create-account:focus, .btn-login:focus {
+    color: white !important;
+    border-color: var(--primary-color) !important;
+    background-color: var(--primary-color) !important;
+    transform: scale(1.02) !important;
+    transition: 0.3s !important;
+}
+
+
+.btn-login:disabled, .btn-create-account:disabled {
+    color: white !important;
+    border-color: var(--third-color) !important;
+    background-color: var(--third-color) !important;
+}
+
+.form-control:focus, .form-control:active {
+    border-color: var(--primary-color) !important;
+    box-shadow: none !important;
+}

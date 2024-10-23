@@ -1,0 +1,82 @@
+.navbar {
+    background-color: var(--background-color) !important;
+}
+
+.logo {
+    text-decoration: none;
+}
+
+.logo:hover {
+    color: var(--primary-color);
+    cursor: pointer;
+}
+
+.logo-img {
+    max-height: 80px;
+}
+
+.logo-text {
+    padding-left: 15px;
+    font-family: 'Yeseva One', sans-serif !important;
+    font-size: xxx-large;
+    background: linear-gradient(to left, #F87037, #F5C404);
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+}
+
+.container-navbar-buttons {
+    margin: 0 30px;
+}
+
+.btn-search-navbar, .btn-search-navbar:hover, .btn-search-navbar:focus {
+    margin-right: 2%;
+    border: none;
+}
+
+.btn-category {
+    color: black !important;
+    font-size: large !important;
+    border-color: black !important;
+    margin: 10px 20px 0 20px !important;
+    /* padding: 5px 20px 10px 15px !important; */
+    border-radius: 15px !important;
+}
+
+.btn-category > img {
+    width: 30px;
+    height: 30px;
+    margin-right: 5px;
+    border: transparent;
+}
+
+.btn-category:hover {
+    border-color: var(--primary-color) !important;
+    background-color: var(--secondary-color);
+    transform: scale(1.05);
+    transition: 0.3s;
+}
+
+.btn-category:focus {
+    border-color: black;
+    color: black;
+}
+
+.isActive {
+    border-color: var(--primary-color) !important;
+    background-color: rgba(255, 197, 132, 0.5) !important;
+    color: black !important;
+}
+
+.separator {
+    border: 2px solid black !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.modal-pop-up {
+    width: 50%;
+    border-radius: 20px;
+    border: 1px solid var(--primary-color);
+    background-color: whitesmoke;
+    margin: 10% 25%;
+}

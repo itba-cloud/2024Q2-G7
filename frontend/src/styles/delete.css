@@ -1,0 +1,7 @@
+.buttons {
+    padding: 0 !important;
+    margin-top: 0.5% !important;
+    margin-bottom: 0 !important;
+    display: flex !important;
+    justify-content: space-around !important;
+}

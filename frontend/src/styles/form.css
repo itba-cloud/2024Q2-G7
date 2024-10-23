@@ -1,0 +1,81 @@
+.form-label {
+    font-size: large !important;
+    font-weight: bold !important;
+}
+
+.form-control:focus, .form-control:active {
+    border-color: var(--primary-color) !important;
+    box-shadow: none !important;
+}
+
+.optional-text {
+    font-size: small !important;
+    font-weight: normal !important;
+    margin-left: 8px !important;
+}
+
+.max-input-text {
+    font-size: small !important;
+    font-weight: normal !important;
+    color: rgba(0, 0, 0, 0.5) !important;
+    margin: 0 10px 0 0 !important;
+}
+
+.required-field {
+    color: red !important;
+    margin-left: 5px !important;
+}
+
+.form-error-label {
+    color: red !important;
+    margin: 0 !important;
+    padding: 0 4px !important;
+}
+
+/*---------------------------*/
+.btn-submit-form {
+    font-size: large !important;
+    font-weight: bold !important;
+    color: white !important;
+    border-color: var(--primary-color) !important;
+    background-color: var(--primary-color) !important;
+}
+
+.btn-submit-form:hover, .btn-submit-form:focus {
+    color: white !important;
+    border-color: var(--primary-color) !important;
+    background-color: var(--primary-color) !important;
+    transform: scale(1.02) !important;
+    transition: 0.3s !important;
+}
+
+.btn-submit-form:disabled {
+    color: white !important;
+    border-color: var(--third-color) !important;
+    background-color: var(--third-color) !important;
+}
+
+/*---------------------------*/
+.btn-cancel-form {
+    font-size: large !important;
+    font-weight: bold !important;
+    color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    background-color: white !important;
+}
+
+.btn-cancel-form:hover, .btn-cancel-form:focus {
+    color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    background-color: white !important;
+    transform: scale(1.02) !important;
+    transition: 0.3s !important;
+}
+
+.btn-cancel-form:disabled {
+    color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    background-color: white !important;
+}
+
+

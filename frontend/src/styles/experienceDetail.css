@@ -1,0 +1,31 @@
+.information-title {
+    font-size: large !important;
+    font-weight: 900 !important;
+}
+
+.information-text {
+    font-size: medium !important;
+}
+
+.btn-create-review {
+    font-size: large !important;
+    font-weight: bold !important;
+    color: white !important;
+    border-color: var(--primary-color) !important;
+    background-color: var(--primary-color) !important;
+    padding: 10px 20px 10px 20px !important;
+}
+
+.btn-create-review:hover {
+    color: white !important;
+    border-color: var(--primary-color) !important;
+    background-color: var(--primary-color) !important;
+    transform: scale(1.1) !important;
+    transition: 0.3s !important;
+}
+
+.btn-create-review:focus {
+    color: white !important;
+    border-color: var(--primary-color) !important;
+    background-color: var(--primary-color) !important;
+}

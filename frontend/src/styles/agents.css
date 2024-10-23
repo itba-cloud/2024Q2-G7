@@ -1,0 +1,79 @@
+/* AgentDashboard.css */
+.dashboard-container {
+    padding: 20px;
+    text-align: center;
+}
+
+.agent-grid {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+}
+
+.agent-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.agent-card:hover {
+    transform: translateY(-5px);
+}
+
+.agent-info p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #555;
+}
+
+.btn-agent-detail {
+    font-size: large !important;
+    font-weight: bold !important;
+    color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    background-color: white !important;
+}
+
+.btn-agent-detail:hover, .btn-agent-detail:focus {
+    color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    background-color: white !important;
+    transform: scale(1.02) !important;
+    transition: 0.3s !important;
+}
+
+
+/* AgentProfile.css */
+
+.profile-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-right: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.profile-info p {
+    font-size: 16px;
+    color: #555;
+}
+
+.profile-details ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.profile-reviews blockquote {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-left: 5px solid var(--primary-color);
+    font-style: italic;
+    margin: 15px 0;
+}
