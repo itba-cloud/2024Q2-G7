@@ -2,9 +2,11 @@
 
 ## Autores
 
-- [Tomas Alvarez Escalante (60127)](https://github.com/tomalvarezz)
-- [Lucas Agustin Ferreiro (61595)](https://github.com/lukyferreiro)
-- [Roman Gomez Kiss (61003)](https://github.com/rgomezkiss)
+| Nombre | Legajo | Participación |
+| ------ | ------ | ------------- |
+| [Tomas Alvarez Escalante](https://github.com/tomalvarezz) | 60127 | 33.3% |
+| [Lucas Agustin Ferreiro](https://github.com/lukyferreiro) | 61595 | 33.3% |
+| [Roman Gomez Kiss](https://github.com/rgomezkiss) | 61003 | 33.3% |
 
 ## Requisitos
 
