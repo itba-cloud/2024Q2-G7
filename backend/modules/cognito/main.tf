@@ -60,7 +60,6 @@ resource "aws_cognito_user_pool_client" "this" {
   write_attributes                     = ["email", "custom:role"]
 
   // TODO creo que no hace falta porque manejamos todo desde el front y no desde el dominio que nos da cognito
-  //callback_urls = ["https://${var.base_domain}/"]
   //callback_urls = ["https://${var.bucket_website_endpoint}/"]
   //logout_urls   = ["https://${var.bucket_website_endpoint}/"]
 

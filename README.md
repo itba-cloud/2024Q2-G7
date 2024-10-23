@@ -73,7 +73,7 @@ Módulo utilizado para configurar un User Pool para gestionar la autenticación 
 
 ### Módulo waf
 
-Módulo encargado de crear una Web Application Firewall (WAF) para proteger la API de posibles ataques de denegación de servicio (DoS) y tráfico malicioso. Este módulo implementa reglas basadas en límites de solicitudes (rate-based rules) para mitigar ataques de IPs tanto de países específicos como de otros países globalmente, permitiendo bloquear IPs que excedan los umbrales de solicitudes configurados.
+Módulo encargado de crear un WAF para proteger la API de posibles ataques DoS y tráfico malicioso. Este módulo implementa reglas basadas en límites de solicitudes (rate-based rules) para mitigar ataques de IPs tanto de países específicos como de otros países globalmente, permitiendo bloquear IPs que excedan los umbrales de solicitudes configurados.
 
 ### Módulo lambda
 
