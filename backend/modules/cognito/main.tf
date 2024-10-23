@@ -60,7 +60,7 @@ resource "aws_cognito_user_pool_client" "this" {
   write_attributes                     = ["email", "custom:role"]
 
   // TODO creo que no hace falta porque manejamos todo desde el front y no desde el dominio que nos da cognito
-  //callback_urls = ["https://${var.bucket_website_endpoint}/"]
+  callback_urls = ["https://${var.bucket_website_endpoint}/"]
   //logout_urls   = ["https://${var.bucket_website_endpoint}/"]
 
   token_validity_units {
@@ -71,7 +71,7 @@ resource "aws_cognito_user_pool_client" "this" {
 }
 
 // TODO creo que no hace falta porque manejamos todo desde el front y no desde el dominio que nos da cognito
-/* resource "aws_cognito_user_pool_domain" "this" {
+  resource "aws_cognito_user_pool_domain" "this" {
   domain       = "${var.project_name}-user-pool-domain"
   user_pool_id = aws_cognito_user_pool.this.id
-} */
+} 

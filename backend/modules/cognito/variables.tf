@@ -3,10 +3,10 @@ variable "project_name" {
   description = "Project name"
 }
 
-/* variable "bucket_website_endpoint" {
+variable "bucket_website_endpoint" {
   type        = string
   description = "URL of the S3 bucket website"
-} */
+} 
 
 variable "admin_email" {
   type        = string

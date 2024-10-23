@@ -16,7 +16,7 @@
 
 ## Ejecución del proyecto
 
-1. Crear archivo `terraform.tfvars` con las siguientes variables:
+1. Crear archivo `terraform.tfvars` en la carpeta "backend" con las siguientes variables:
     - `aws_region`: region de AWS a deployar.
     - `project_name`: nombre del proyecto (debe ser unico).
     - `admin_password`: contraseña del administrador.
@@ -45,7 +45,7 @@ Tras aplicar esto último, podremos observar en consola el link al sitio web, el
 - `REACT_APP_API_URL`=XXX
 - `REACT_APP_GOOGLE_MAPS_API_KEY`=XXX
 
-Nota: La variable REACT_APP_GOOGLE_MAPS_API_KEY es utilizada para mostrar la ubicacion de las experiencias en un mapa. Se provee el valor utilizado por nosotros AIzaSyDYTmGoct4rNAA0rD3ZVcIqMLuu82Zruqg.
+Nota: La variable REACT_APP_GOOGLE_MAPS_API_KEY es utilizada para mostrar la ubicacion de las experiencias en un mapa. Se provee el valor utilizado por nosotros "AIzaSyDYTmGoct4rNAA0rD3ZVcIqMLuu82Zruqg".
 
 Tras esto se deberá realizar el `npm run build` de la aplicación nuevamente y desplegar la arquitectura con `terraform apply` para establecer el link a la API y las credenciales de Cognito (esto es únicamente para actualizar el frontend con el link y las credenciales).
 
