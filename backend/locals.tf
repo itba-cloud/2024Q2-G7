@@ -194,7 +194,7 @@ locals {
       table_name   = "articles-table"
       billing_mode = "PAY_PER_REQUEST"
       attributes = {
-        agent_id = { name = "agent_id", type = "S" } 
+        agent_id = { name = "agent_id", type = "S" }
         id       = { name = "id", type = "S" }
       }
       primary_keys = {

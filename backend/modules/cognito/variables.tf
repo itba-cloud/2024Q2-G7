@@ -6,7 +6,7 @@ variable "project_name" {
 variable "bucket_website_endpoint" {
   type        = string
   description = "URL of the S3 bucket website"
-} 
+}
 
 variable "admin_email" {
   type        = string

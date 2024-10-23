@@ -15,7 +15,7 @@ module "waf" {
     #"AWSManagedRulesSQLiRuleSet",            # Protege contra ataques SQLi
     #"AWSManagedRulesLinuxRuleSet",           # Protege contra ataques que son específicos para aplicaciones y sistemas que corren en plataformas Linux
     #"AWSManagedRulesUnixRuleSet",            # Analogo anterior para Unix
-    "AWSManagedRulesBotControlRuleSet",      # Proteger contra bots maliciosos
-    "AWSManagedRulesCommonRuleSet"           # Protege contra patrones de tráfico web maliciosos comunes (explotación de vulnerabilidades de OWASP)
+    "AWSManagedRulesBotControlRuleSet", # Proteger contra bots maliciosos
+    "AWSManagedRulesCommonRuleSet"      # Protege contra patrones de tráfico web maliciosos comunes (explotación de vulnerabilidades de OWASP)
   ]
 }

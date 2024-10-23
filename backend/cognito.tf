@@ -1,9 +1,9 @@
 module "cognito" {
   source = "./modules/cognito"
 
-  project_name   = var.project_name
-  admin_email    = local.admin_email
-  admin_password = var.admin_password
+  project_name            = var.project_name
+  admin_email             = local.admin_email
+  admin_password          = var.admin_password
   bucket_website_endpoint = module.static_site.bucket_website_endpoint
 
 
@@ -17,5 +17,5 @@ module "cognito" {
 
   depends_on = [
     module.static_site
-  ] 
+  ]
 }
