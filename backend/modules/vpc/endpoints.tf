@@ -1,5 +1,5 @@
 resource "aws_vpc_endpoint" "gateway" {
-  for_each = var.vpc_endpoints
+  for_each = { for endpoint in var.vpc_endpoints : endpoint.service => endpoint if endpoint.type == "Gateway" }
 
   vpc_id            = aws_vpc.this.id
   vpc_endpoint_type = each.value.type

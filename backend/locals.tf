@@ -194,7 +194,7 @@ locals {
       table_name   = "articles-table"
       billing_mode = "PAY_PER_REQUEST"
       attributes = {
-        agent_id = { name = "agent_id", type = "S" }
+        agent_id = { name = "agent_id", type = "S" } 
         id       = { name = "id", type = "S" }
       }
       primary_keys = {
@@ -547,6 +547,15 @@ locals {
     put_agent_recommendation = {
       entity      = "agents"
       description = "Add/remove agent recommendation Lambda"
+      runtime     = "python3.9"
+      env_vars = {
+        AGENTS_TABLE_NAME      = module.dynamodb["agents"].table_name
+        EXPERIENCES_TABLE_NAME = module.dynamodb["experiences"].table_name
+      }
+    },
+    get_agent_recommendations = {
+      entity      = "agents"
+      description = "Get agent recommendations Lambda"
       runtime     = "python3.9"
       env_vars = {
         AGENTS_TABLE_NAME      = module.dynamodb["agents"].table_name
