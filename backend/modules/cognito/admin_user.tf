@@ -11,7 +11,9 @@ resource "aws_cognito_user" "admin_user" {
   }
 
   lifecycle {
-    ignore_changes = [attributes["custom:role"]]
+    ignore_changes = [
+      all
+    ]
   }
 
   depends_on = [
