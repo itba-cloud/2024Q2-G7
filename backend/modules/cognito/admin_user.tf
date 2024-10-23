@@ -10,6 +10,8 @@ resource "aws_cognito_user" "admin_user" {
     email_verified = true
   }
 
+  //TODO por alguna razon esto no anda
+  //El primer apply crea el usuario bien, pero despues si hago otro apply se me borra el rol "admin"
   lifecycle {
     ignore_changes = [attributes["custom:role"]]
   }
