@@ -1,0 +1,112 @@
+* {
+    font-family: "Cambria", sans-serif !important;
+    --primary-color: #F99D32;
+    --secondary-color: rgb(255, 197, 132);
+    --third-color: #FAB672;
+    --background-color: rgba(250, 182, 114, 0.25);
+}
+
+.footer {
+    background-color: var(--secondary-color) !important;
+    height: 40px !important;
+    font-size: large !important;
+}
+
+.dropdown-item {
+    display: flex !important;
+    align-items: center !important;
+}
+
+.dropdown-item::selection, .dropdown-item:focus {
+    background-color: #FAB672 !important;
+}
+
+.container-main {
+    height: 100% !important;
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.modalContainer {
+    max-width: 50% !important;
+    border-radius: 20px !important;
+    border: 1px solid var(--primary-color) !important;
+    background-color: whitesmoke !important;
+    margin: 15px 0 !important;
+}
+
+.experienceFormContainer {
+    max-width: 75% !important;
+    border-radius: 20px !important;
+    border: 1px solid var(--primary-color) !important;
+    background-color: whitesmoke !important;
+}
+
+.container-experiences {
+    flex: 5 !important;
+}
+
+.card {
+    border: 1.5px solid black !important;
+}
+
+.page-link, .page-link:hover, .page-link:focus {
+    color: var(--primary-color) !important;
+    box-shadow: none !important;
+}
+
+.current-page-link {
+    background-color: var(--secondary-color) !important;
+    font-weight: 600 !important;
+    color: black !important;
+}
+
+/*-------------------------------------*/
+/*  Primary --> botones de la navbar  */
+/*-------------------------------------*/
+
+.agent-link {
+    font-size: 20px !important;
+    font-weight: bold !important;
+    color: var(--primary-color) !important;
+}
+
+.agent-link:hover, .agent-link:focus, .agent-link:disabled{
+    transition: 0.3s !important;
+    transform: scale(1.1) !important;
+}
+
+.button-primary {
+    font-size: large !important;
+    font-weight: bold !important;
+    color: white !important;
+    border-color: var(--primary-color) !important;
+    background-color: var(--primary-color) !important;
+    padding: 10px 20px 10px 20px !important;
+}
+
+.button-primary:hover, .button-primary:focus, .button-primary:disabled,
+.button-add-to-trips:hover, .button-add-to-trips:focus, .button-add-to-trips:disabled {
+    color: white !important;
+    border-color: var(--primary-color) !important;
+    background-color: var(--primary-color) !important;
+    transition: 0.3s !important;
+    transform: scale(1.1) !important;
+}
+
+.button-add-to-trips {
+    font-weight: bold !important;
+    color: white !important;
+    border-color: var(--primary-color) !important;
+    background-color: var(--primary-color) !important;
+    padding: 10px 20px 10px 20px !important;
+}
+
+.ic_no_search {
+    width: "150px" !important;
+    height: "150px" !important;
+    min-width: "150px" !important;
+    min-height: "150px" !important;
+    margin-right: "5px" !important;
+}

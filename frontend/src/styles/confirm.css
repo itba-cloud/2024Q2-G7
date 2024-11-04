@@ -1,0 +1,23 @@
+.btn-confirm {
+    font-size: medium !important;
+    font-weight: bold !important;
+    color: white !important;
+    border-color: var(--primary-color) !important;
+    background-color: var(--primary-color) !important;
+    padding: 5px 10px !important;
+    margin: 10px !important;
+}
+
+.btn-confirm:hover {
+    color: white !important;
+    border-color: var(--primary-color) !important;
+    background-color: var(--primary-color) !important;
+    transform: scale(1.05) !important;
+    transition: 0.3s !important;
+}
+
+.btn-confirm:focus {
+    color: white !important;
+    border-color: var(--primary-color) !important;
+    background-color: var(--primary-color) !important;
+}

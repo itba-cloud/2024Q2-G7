@@ -1,0 +1,29 @@
+.btn-trip-detail {
+    font-size: large !important;
+    font-weight: bold !important;
+    color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    background-color: white !important;
+}
+
+.btn-trip-detail:hover, .btn-trip-detail:focus {
+    color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    background-color: white !important;
+    transform: scale(1.02) !important;
+    transition: 0.3s !important;
+}
+
+/* Aplica el efecto a todo el contenido dentro del contenedor */
+.modal-open .content-blur {
+    opacity: 0.3;
+    filter: blur(5px);
+    transition: opacity 0.3s ease, filter 0.3s ease;
+}
+
+/* Asegúrate de que el modal no sea afectado */
+.modal-open .modal {
+    opacity: 1;
+    filter: none;
+    transition: none;
+}

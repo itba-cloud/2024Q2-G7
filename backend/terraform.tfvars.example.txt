@@ -1,0 +1,3 @@
+aws_region     = "XXX"
+project_name   = "XXX"
+admin_password = "XXX"

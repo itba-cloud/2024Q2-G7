@@ -1,0 +1,48 @@
+.input {
+    font-weight: 500 !important;
+    font-size: 16px !important;
+    color: #282827 !important;
+    border: 1px solid #ccc !important;
+    border-radius: 8px !important;
+}
+
+#success {
+    color: rgb(130, 201, 30) !important;
+}
+
+.btn-eye {
+    border-radius: 0 8px 8px 0 !important;
+    background-color: rgba(128, 128, 128, 0.4) !important;
+    border-color: rgba(128, 128, 128, 0.8) !important;
+    color: black !important;
+}
+
+.btn-eye:hover, .btn-eye:focus {
+    transition: 150ms linear !important;
+    background-color: rgba(128, 128, 128, 0.4) !important;
+    border-color: rgba(128, 128, 128, 0.8) !important;
+    color: black !important;
+}
+
+.btn-continue {
+    font-size: large !important;
+    font-weight: bold !important;
+    color: white !important;
+    border-color: var(--primary-color) !important;
+    background-color: var(--primary-color) !important;
+    padding: 10px 20px 10px 20px !important;
+}
+
+.btn-continue:hover, .btn-continue:focus {
+    color: white !important;
+    border-color: var(--primary-color) !important;
+    background-color: var(--primary-color) !important;
+    transform: scale(1.1) !important;
+    transition: 0.3s !important;
+}
+
+.btn-continue:disabled {
+    color: white !important;
+    border-color: var(--third-color) !important;
+    background-color: var(--third-color) !important;
+}

@@ -1,0 +1,4906 @@
+openapi: 3.0.1
+info:
+  title: Getaway Cloud-G7
+  description: "Getaway API"
+  version: 1.0.0
+servers:
+  - url: https://virtserver.swaggerhub.com/LFERREIRO/Getaway/1.0.0
+    description: SwaggerHub API Auto Mocking
+tags:
+  - name: Location
+  - name: Experiences
+  - name: Reviews
+  - name: Users
+  - name: Trips
+  - name: Agents
+  - name: Admin
+
+x-amazon-apigateway-request-validators:
+  all:
+    validateRequestBody: true
+    validateRequestParameters: true
+x-amazon-apigateway-request-validator: all
+
+paths:
+  /provinces:
+    get:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${get_provinces}"
+      summary: Get all provinces
+      description: ""
+      security: []
+      tags:
+        - Location
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Province"
+        "204":
+          description: No Content
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    options:
+      tags:
+        - Location
+      responses:
+        "200":
+          description: CORS preflight response
+          schema:
+            $ref: "#/components/schemas/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              description: Indicates whether the response can be shared with requesting code from the given origin.
+              type: string
+            Access-Control-Allow-Methods:
+              description: Specifies the methods allowed when accessing the resource.
+              type: string
+            Access-Control-Allow-Headers:
+              description: Indicates which headers can be used during the actual request.
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: never
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+
+  /provinces/{province}/cities:
+    get:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${get_cities_by_province}"
+      summary: Get all cities of province by name
+      description: ""
+      security: []
+      tags:
+        - Location
+      parameters:
+        - name: province
+          in: path
+          description: Nombre de la provincia
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/City"
+        "204":
+          description: No Content
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    options:
+      tags:
+        - Location
+      parameters:
+        - name: province
+          in: path
+          description: Nombre de la provincia
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: CORS preflight response
+          schema:
+            $ref: "#/components/schemas/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              description: Indicates whether the response can be shared with requesting code from the given origin.
+              type: string
+            Access-Control-Allow-Methods:
+              description: Specifies the methods allowed when accessing the resource.
+              type: string
+            Access-Control-Allow-Headers:
+              description: Indicates which headers can be used during the actual request.
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: never
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+
+  /experiences:
+    get:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${get_experiences}"
+      summary: Get all experiences
+      description: ""
+      security: []
+      tags:
+        - Experiences
+      parameters:
+        - name: page
+          in: query
+          description: Número de página
+          required: false
+          schema:
+            type: integer
+        - name: category
+          in: query
+          description: Categoría de la experiencia
+          required: false
+          schema:
+            type: string
+            enum:
+            - aventura
+            - gastronomia
+            - hoteleria
+            - relax
+            - historico
+            - nocturno
+        - name: name
+          in: query
+          description: Nombre de la experiencia
+          required: false
+          schema:
+            type: string
+        - name: price
+          in: query
+          description: Precio de la experiencia
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+        - name: score
+          in: query
+          description: Puntaje de la experiencia
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 5
+        - name: province
+          in: query
+          description: Provincia de la experiencia
+          required: false
+          schema:
+            type: string
+        - name: city
+          in: query
+          description: Ciudad de la experiencia
+          required: false
+          schema:
+            type: string
+        - name: order
+          in: query
+          description: Orden de las experiencias
+          required: false
+          schema:
+            type: string
+            enum:
+            - OrderByAZ
+            - OrderByZA
+            - OrderByLowPrice
+            - OrderByHighPrice
+            - OrderByRankAsc
+            - OrderByRankDesc
+            - OrderByNewest
+            - OrderByOldest
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Experience"
+        "204":
+          description: No Content
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${post_experiences}"
+      summary: Create experience
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Experiences
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExperiencePost"
+      responses:
+        "201":
+          description: Created
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    options:
+      tags:
+        - Experiences
+      responses:
+        "200":
+          description: CORS preflight response
+          schema:
+            $ref: "#/components/schemas/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              description: Indicates whether the response can be shared with requesting code from the given origin.
+              type: string
+            Access-Control-Allow-Methods:
+              description: Specifies the methods allowed when accessing the resource.
+              type: string
+            Access-Control-Allow-Headers:
+              description: Indicates which headers can be used during the actual request.
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: never
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+
+  /experiences/{experience_id}:
+    get:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${get_experience_by_id}"
+      summary: Get experience by ID
+      description: ""
+      security: []
+      tags:
+        - Experiences
+      parameters:
+        - name: experience_id
+          in: path
+          description: ID de la experiencia
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Experience"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${put_experience_by_id}"
+      summary: Edit experience
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Experiences
+      parameters:
+        - name: experience_id
+          in: path
+          description: ID de la experiencia
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExperiencePut"
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${delete_experience_by_id}"
+      summary: Delete experiences by ID
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Experiences
+      parameters:
+        - name: experience_id
+          in: path
+          description: ID de la experiencia
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    options:
+      tags:
+        - Experiences
+      parameters:
+        - name: experience_id
+          in: path
+          description: ID de la experiencia
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: CORS preflight response
+          schema:
+            $ref: "#/components/schemas/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              description: Indicates whether the response can be shared with requesting code from the given origin.
+              type: string
+            Access-Control-Allow-Methods:
+              description: Specifies the methods allowed when accessing the resource.
+              type: string
+            Access-Control-Allow-Headers:
+              description: Indicates which headers can be used during the actual request.
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: never
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+
+  /experiences/{experience_id}/image:
+    get:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${get_experience_image_by_id}"
+      summary: Get experience image by ID
+      description: ""
+      security: []
+      tags:
+        - Experiences
+      parameters:
+        - name: experience_id
+          in: path
+          description: ID de la experiencia
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StringResponse"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${put_experience_image_by_id}"
+      summary: Put experience image by ID
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Experiences
+      parameters:
+        - name: experience_id
+          in: path
+          description: ID de la experiencia
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImagePut"
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    options:
+      tags:
+        - Experiences
+      parameters:
+        - name: experience_id
+          in: path
+          description: ID de la experiencia
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: CORS preflight response
+          schema:
+            $ref: "#/components/schemas/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              description: Indicates whether the response can be shared with requesting code from the given origin.
+              type: string
+            Access-Control-Allow-Methods:
+              description: Specifies the methods allowed when accessing the resource.
+              type: string
+            Access-Control-Allow-Headers:
+              description: Indicates which headers can be used during the actual request.
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: never
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+
+  /reviews:
+    get:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${get_reviews}"
+      summary: Get all reviews
+      description: ""
+      security: []
+      tags:
+        - Reviews
+      parameters:
+        - name: page
+          in: query
+          description: Número de página
+          required: false
+          schema:
+            type: integer
+        - name: user_id
+          in: query
+          description: ID del usuario
+          required: false
+          schema:
+            type: string
+        - name: experience_id
+          in: query
+          description: ID de la experiencia
+          required: false
+          schema:
+            type: string
+        - name: agent_id
+          in: query
+          description: ID del agente
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Review"
+        "204":
+          description: No Content
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${post_reviews}"
+      summary: Create review
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Reviews
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReviewPost"
+      responses:
+        "201":
+          description: Created
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    options:
+      tags:
+        - Reviews
+      responses:
+        "200":
+          description: CORS preflight response
+          schema:
+            $ref: "#/components/schemas/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              description: Indicates whether the response can be shared with requesting code from the given origin.
+              type: string
+            Access-Control-Allow-Methods:
+              description: Specifies the methods allowed when accessing the resource.
+              type: string
+            Access-Control-Allow-Headers:
+              description: Indicates which headers can be used during the actual request.
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: never
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+
+  /reviews/{review_id}:
+    get:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${get_review_by_id}"
+      summary: Get review by ID
+      description: ""
+      security: []
+      tags:
+        - Reviews
+      parameters:
+        - name: review_id
+          in: path
+          description: ID de la reseña
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Review"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${put_review_by_id}"
+      summary: Edit review
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Reviews
+      parameters:
+        - name: review_id
+          in: path
+          description: ID de la reseña
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReviewPut"
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${delete_review_by_id}"
+      summary: Delete review
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Reviews
+      parameters:
+        - name: review_id
+          in: path
+          description: ID de la reseña
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    options:
+      tags:
+        - Reviews
+      parameters:
+        - name: review_id
+          in: path
+          description: ID de la reseña
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: CORS preflight response
+          schema:
+            $ref: "#/components/schemas/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              description: Indicates whether the response can be shared with requesting code from the given origin.
+              type: string
+            Access-Control-Allow-Methods:
+              description: Specifies the methods allowed when accessing the resource.
+              type: string
+            Access-Control-Allow-Headers:
+              description: Indicates which headers can be used during the actual request.
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: never
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+
+  /users/{user_id}:
+    get:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${get_user_by_id}"
+      summary: Get user by ID
+      description: ""
+      security: []
+      tags:
+        - Users
+      parameters:
+        - name: user_id
+          in: path
+          description: ID del usuario
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${put_user_by_id}"
+      summary: Edit user by ID
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Users
+      parameters:
+        - name: user_id
+          in: path
+          description: ID del usuario
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserPut"
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    options:
+      tags:
+        - Users
+      parameters:
+        - name: user_id
+          in: path
+          description: ID del usuario
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: CORS preflight response
+          schema:
+            $ref: "#/components/schemas/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              description: Indicates whether the response can be shared with requesting code from the given origin.
+              type: string
+            Access-Control-Allow-Methods:
+              description: Specifies the methods allowed when accessing the resource.
+              type: string
+            Access-Control-Allow-Headers:
+              description: Indicates which headers can be used during the actual request.
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: never
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+
+  /users/{user_id}/image:
+    get:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${get_user_image_by_id}"
+      summary: Get user image by ID
+      description: ""
+      security: []
+      tags:
+        - Users
+      parameters:
+        - name: user_id
+          in: path
+          description: ID del usuario
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StringResponse"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${put_user_image_by_id}"
+      summary: Edit user image by ID
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Users
+      parameters:
+        - name: user_id
+          in: path
+          description: ID del usuario
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImagePut"
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    options:
+      tags:
+        - Users
+      parameters:
+        - name: user_id
+          in: path
+          description: ID del usuario
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: CORS preflight response
+          schema:
+            $ref: "#/components/schemas/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              description: Indicates whether the response can be shared with requesting code from the given origin.
+              type: string
+            Access-Control-Allow-Methods:
+              description: Specifies the methods allowed when accessing the resource.
+              type: string
+            Access-Control-Allow-Headers:
+              description: Indicates which headers can be used during the actual request.
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: never
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+
+  /users/{user_id}/experiences:
+    get:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${get_user_experiences}"
+      summary: Get experiences by user ID
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Users
+      parameters:
+        - name: user_id
+          in: path
+          description: ID del usuario
+          required: true
+          schema:
+            type: string
+        - name: order
+          in: query
+          description: Orden de las experiencias
+          required: false
+          schema:
+            type: string
+            enum:
+            - OrderByAZ
+            - OrderByZA
+            - OrderByLowPrice
+            - OrderByHighPrice
+            - OrderByNewest
+            - OrderByOldest
+            - OrderByPendings
+            - OrderByApproved
+            - OrderByFavsAsc
+            - OrderByFavsDesc
+            - OrderByViewsAsc
+            - OrderByViewsDesc
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Experience"
+        "204":
+          description: No Content
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    options:
+      tags:
+        - Users
+      parameters:
+        - name: user_id
+          in: path
+          description: ID del usuario
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: CORS preflight response
+          schema:
+            $ref: "#/components/schemas/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              description: Indicates whether the response can be shared with requesting code from the given origin.
+              type: string
+            Access-Control-Allow-Methods:
+              description: Specifies the methods allowed when accessing the resource.
+              type: string
+            Access-Control-Allow-Headers:
+              description: Indicates which headers can be used during the actual request.
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: never
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+
+  /users/{user_id}/favourites:
+    get:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${get_user_favourites}"
+      summary: Get experience favourites by user ID
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Users
+      parameters:
+        - name: user_id
+          in: path
+          description: ID del usuario
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserExperienceFavourites"
+        "204":
+          description: No Content
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    options:
+      tags:
+        - Users
+      parameters:
+        - name: user_id
+          in: path
+          description: ID del usuario
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: CORS preflight response
+          schema:
+            $ref: "#/components/schemas/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              description: Indicates whether the response can be shared with requesting code from the given origin.
+              type: string
+            Access-Control-Allow-Methods:
+              description: Specifies the methods allowed when accessing the resource.
+              type: string
+            Access-Control-Allow-Headers:
+              description: Indicates which headers can be used during the actual request.
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: never
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+
+  /users/{user_id}/favourites/{experience_id}:
+    put:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${put_user_favourite_by_id}"
+      summary: Put experience favourite by user ID
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Users
+      parameters:
+        - name: user_id
+          in: path
+          description: ID del usuario
+          required: true
+          schema:
+            type: string
+        - name: experience_id
+          in: path
+          description: ID de la experiencia
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserExperienceFavouritePut"
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    options:
+      tags:
+        - Users
+      parameters:
+        - name: user_id
+          in: path
+          description: ID del usuario
+          required: true
+          schema:
+            type: string
+        - name: experience_id
+          in: path
+          description: ID de la experiencia
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: CORS preflight response
+          schema:
+            $ref: "#/components/schemas/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              description: Indicates whether the response can be shared with requesting code from the given origin.
+              type: string
+            Access-Control-Allow-Methods:
+              description: Specifies the methods allowed when accessing the resource.
+              type: string
+            Access-Control-Allow-Headers:
+              description: Indicates which headers can be used during the actual request.
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: never
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+
+  /trips:
+    post:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${post_trips}"
+      summary: Create trip
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Trips
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TripPost"
+      responses:
+        "201":
+          description: Created
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    get:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${get_trips}"
+      summary: Get trips
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Trips
+      parameters: []
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Trip"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    options:
+      tags:
+        - Trips
+      responses:
+        "200":
+          description: CORS preflight response
+          schema:
+            $ref: "#/components/schemas/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              description: Indicates whether the response can be shared with requesting code from the given origin.
+              type: string
+            Access-Control-Allow-Methods:
+              description: Specifies the methods allowed when accessing the resource.
+              type: string
+            Access-Control-Allow-Headers:
+              description: Indicates which headers can be used during the actual request.
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: never
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+
+  /trips/{trip_id}:
+    get:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${get_trip_by_id}"
+      summary: Get trip by ID
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Trips
+      parameters:
+        - name: trip_id
+          in: path
+          description: ID del viaje
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Trip"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${put_trip_by_id}"
+      summary: Edit trip by ID
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Trips
+      parameters:
+        - name: trip_id
+          in: path
+          description: ID del viaje
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TripPut"
+      responses:
+        "201":
+          description: Created
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${delete_trip_by_id}"
+      summary: Delete trip by ID
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Trips
+      parameters:
+        - name: trip_id
+          in: path
+          description: ID del viaje
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    options:
+      tags:
+        - Trips
+      parameters:
+        - name: trip_id
+          in: path
+          description: ID del viaje
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: CORS preflight response
+          schema:
+            $ref: "#/components/schemas/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              description: Indicates whether the response can be shared with requesting code from the given origin.
+              type: string
+            Access-Control-Allow-Methods:
+              description: Specifies the methods allowed when accessing the resource.
+              type: string
+            Access-Control-Allow-Headers:
+              description: Indicates which headers can be used during the actual request.
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: never
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+
+  /trips/{trip_id}/experiences:
+    get:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${get_trip_experiences}"
+      summary: Get trip experiences by trip ID
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Trips
+      parameters:
+        - name: trip_id
+          in: path
+          description: ID del viaje
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Experience"
+        "204":
+          description: No Content
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    options:
+      tags:
+        - Trips
+      parameters:
+        - name: trip_id
+          in: path
+          description: ID del viaje
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: CORS preflight response
+          schema:
+            $ref: "#/components/schemas/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              description: Indicates whether the response can be shared with requesting code from the given origin.
+              type: string
+            Access-Control-Allow-Methods:
+              description: Specifies the methods allowed when accessing the resource.
+              type: string
+            Access-Control-Allow-Headers:
+              description: Indicates which headers can be used during the actual request.
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: never
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+
+  /trips/{trip_id}/experiences/{experience_id}:
+    put:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${put_experience_in_trip_by_id}"
+      summary: Add or remove experience from trip by ID
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Trips
+      parameters:
+        - name: trip_id
+          in: path
+          description: ID del viaje
+          required: true
+          schema:
+            type: string
+        - name: experience_id
+          in: path
+          description: ID de la experiencia
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TripPutExperience"
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    options:
+      tags:
+        - Trips
+      parameters:
+        - name: trip_id
+          in: path
+          description: ID del viaje
+          required: true
+          schema:
+            type: string
+        - name: experience_id
+          in: path
+          description: ID de la experiencia
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: CORS preflight response
+          schema:
+            $ref: "#/components/schemas/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              description: Indicates whether the response can be shared with requesting code from the given origin.
+              type: string
+            Access-Control-Allow-Methods:
+              description: Specifies the methods allowed when accessing the resource.
+              type: string
+            Access-Control-Allow-Headers:
+              description: Indicates which headers can be used during the actual request.
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: never
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+
+  /agents:
+    get:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${get_agents}"
+      summary: Get all agents
+      description: ""
+      security: []
+      tags:
+        - Agents
+      parameters:
+        - name: page
+          in: query
+          description: Número de página
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Agent"
+        "204":
+          description: No Content
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${post_agents}"
+      summary: Create agent
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Agents
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AgentPost"
+      responses:
+        "201":
+          description: Created
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    options:
+      tags:
+        - Agents
+      responses:
+        "200":
+          description: CORS preflight response
+          schema:
+            $ref: "#/components/schemas/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              description: Indicates whether the response can be shared with requesting code from the given origin.
+              type: string
+            Access-Control-Allow-Methods:
+              description: Specifies the methods allowed when accessing the resource.
+              type: string
+            Access-Control-Allow-Headers:
+              description: Indicates which headers can be used during the actual request.
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: never
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+
+  /agents/{agent_id}:
+    get:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${get_agent_by_id}"
+      summary: Get agent by ID
+      description: ""
+      security: []
+      tags:
+        - Agents
+      parameters:
+        - name: agent_id
+          in: path
+          description: ID del agente
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Agent"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${put_agent_by_id}"
+      summary: Edit agent
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Agents
+      parameters:
+        - name: agent_id
+          in: path
+          description: ID del agente
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AgentPut"
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    options:
+      tags:
+        - Agents
+      parameters:
+        - name: agent_id
+          in: path
+          description: ID del agente
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: CORS preflight response
+          schema:
+            $ref: "#/components/schemas/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              description: Indicates whether the response can be shared with requesting code from the given origin.
+              type: string
+            Access-Control-Allow-Methods:
+              description: Specifies the methods allowed when accessing the resource.
+              type: string
+            Access-Control-Allow-Headers:
+              description: Indicates which headers can be used during the actual request.
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: never
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+
+  /agents/{agent_id}/image:
+    get:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${get_agent_image_by_id}"
+      summary: Get agent image by ID
+      description: ""
+      security: []
+      tags:
+        - Agents
+      parameters:
+        - name: agent_id
+          in: path
+          description: ID del agente
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                type: string
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${put_agent_image_by_id}"
+      summary: Edit agent image by ID
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Agents
+      parameters:
+        - name: agent_id
+          in: path
+          description: ID del agente
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImagePut"
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    options:
+      tags:
+        - Agents
+      parameters:
+        - name: agent_id
+          in: path
+          description: ID del agente
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: CORS preflight response
+          schema:
+            $ref: "#/components/schemas/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              description: Indicates whether the response can be shared with requesting code from the given origin.
+              type: string
+            Access-Control-Allow-Methods:
+              description: Specifies the methods allowed when accessing the resource.
+              type: string
+            Access-Control-Allow-Headers:
+              description: Indicates which headers can be used during the actual request.
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: never
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+
+  /agents/{agent_id}/recommendations:
+    get:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${get_agent_recommendations}"
+      summary: Get experience recommendations by agent ID
+      description: ""
+      security: []
+      tags:
+        - Agents
+      parameters:
+        - name: agent_id
+          in: path
+          description: ID del agente
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Experience"
+        "204":
+          description: No Content
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    options:
+      tags:
+        - Agents
+      parameters:
+        - name: agent_id
+          in: path
+          description: ID del agente
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: CORS preflight response
+          schema:
+            $ref: "#/components/schemas/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              description: Indicates whether the response can be shared with requesting code from the given origin.
+              type: string
+            Access-Control-Allow-Methods:
+              description: Specifies the methods allowed when accessing the resource.
+              type: string
+            Access-Control-Allow-Headers:
+              description: Indicates which headers can be used during the actual request.
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: never
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+
+  /agents/{agent_id}/recommendations/{experience_id}:
+    put:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${put_agent_recommendation}"
+      summary: Add/remove experience recommendation by agent
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Agents
+      parameters:
+        - name: agent_id
+          in: path
+          description: ID del agente
+          required: true
+          schema:
+            type: string
+        - name: experience_id
+          in: path
+          description: ID de la experiencia
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AgentRecommendationPut"
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    options:
+      tags:
+        - Agents
+      parameters:
+        - name: agent_id
+          in: path
+          description: ID del agente
+          required: true
+          schema:
+            type: string
+        - name: experience_id
+          in: path
+          description: ID de la experiencia
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: CORS preflight response
+          schema:
+            $ref: "#/components/schemas/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              description: Indicates whether the response can be shared with requesting code from the given origin.
+              type: string
+            Access-Control-Allow-Methods:
+              description: Specifies the methods allowed when accessing the resource.
+              type: string
+            Access-Control-Allow-Headers:
+              description: Indicates which headers can be used during the actual request.
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: never
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+    
+  /agents/{agent_id}/articles:
+    get:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${get_agent_articles}"
+      summary: Get agent articles by ID
+      description: ""
+      security: []
+      tags:
+        - Agents
+      parameters:
+        - name: agent_id
+          in: path
+          description: ID del agente
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AgentArticle"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${post_agent_articles}"
+      summary: Post agent article by ID
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Agents
+      parameters:
+        - name: agent_id
+          in: path
+          description: ID del agente
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AgentArticlePost"
+      responses:
+        "201":
+          description: Created
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    options:
+      tags:
+        - Agents
+      parameters:
+        - name: agent_id
+          in: path
+          description: ID del agente
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: CORS preflight response
+          schema:
+            $ref: "#/components/schemas/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              description: Indicates whether the response can be shared with requesting code from the given origin.
+              type: string
+            Access-Control-Allow-Methods:
+              description: Specifies the methods allowed when accessing the resource.
+              type: string
+            Access-Control-Allow-Headers:
+              description: Indicates which headers can be used during the actual request.
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: never
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+
+  /agents/{agent_id}/articles/{article_id}:
+    get:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${get_agent_article_by_id}"
+      summary: Get agent article by ID
+      description: ""
+      security: []
+      tags:
+        - Agents
+      parameters:
+        - name: agent_id
+          in: path
+          description: ID del agente
+          required: true
+          schema:
+            type: string
+        - name: article_id
+          in: path
+          description: ID del articulo
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AgentArticle"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${put_agent_article_by_id}"
+      summary: Put agent article by ID
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Agents
+      parameters:
+        - name: agent_id
+          in: path
+          description: ID del agente
+          required: true
+          schema:
+            type: string
+        - name: article_id
+          in: path
+          description: ID del articulo
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AgentArticlePut"
+      responses:
+        "201":
+          description: Created
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    options:
+      tags:
+        - Agents
+      parameters:
+        - name: agent_id
+          in: path
+          description: ID del agente
+          required: true
+          schema:
+            type: string
+        - name: article_id
+          in: path
+          description: ID del articulo
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: CORS preflight response
+          schema:
+            $ref: "#/components/schemas/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              description: Indicates whether the response can be shared with requesting code from the given origin.
+              type: string
+            Access-Control-Allow-Methods:
+              description: Specifies the methods allowed when accessing the resource.
+              type: string
+            Access-Control-Allow-Headers:
+              description: Indicates which headers can be used during the actual request.
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: never
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+
+  /admin/experiences:
+    get:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${get_pending_experiences}"
+      summary: Get pending experiences
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Admin
+      parameters: []
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Experience"
+        "204":
+          description: No Content
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    options:
+      tags:
+        - Admin
+      responses:
+        "200":
+          description: CORS preflight response
+          schema:
+            $ref: "#/components/schemas/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              description: Indicates whether the response can be shared with requesting code from the given origin.
+              type: string
+            Access-Control-Allow-Methods:
+              description: Specifies the methods allowed when accessing the resource.
+              type: string
+            Access-Control-Allow-Headers:
+              description: Indicates which headers can be used during the actual request.
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: never
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+
+  /admin/experiences/{experience_id}:
+    get:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${get_pending_experience_by_id}"
+      summary: Get pending experience by ID
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Admin
+      parameters:
+        - name: experience_id
+          in: path
+          description: ID de la experiencia
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Experience"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${put_pending_experience_by_id}"
+      summary: Approve or deny experience by ID
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Admin
+      parameters:
+        - name: experience_id
+          in: path
+          description: ID de la experiencia
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminPut"
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    options:
+      tags:
+        - Admin
+      parameters:
+        - name: experience_id
+          in: path
+          description: ID de la experiencia
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: CORS preflight response
+          schema:
+            $ref: "#/components/schemas/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              description: Indicates whether the response can be shared with requesting code from the given origin.
+              type: string
+            Access-Control-Allow-Methods:
+              description: Specifies the methods allowed when accessing the resource.
+              type: string
+            Access-Control-Allow-Headers:
+              description: Indicates which headers can be used during the actual request.
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: never
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+
+  /admin/agents:
+    get:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${get_pending_agents}"
+      summary: Get pending agents
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Admin
+      parameters: []
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Agent"
+        "204":
+          description: No Content
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    options:
+      tags:
+        - Admin
+      responses:
+        "200":
+          description: CORS preflight response
+          schema:
+            $ref: "#/components/schemas/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              description: Indicates whether the response can be shared with requesting code from the given origin.
+              type: string
+            Access-Control-Allow-Methods:
+              description: Specifies the methods allowed when accessing the resource.
+              type: string
+            Access-Control-Allow-Headers:
+              description: Indicates which headers can be used during the actual request.
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: never
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+
+  /admin/agents/{agent_id}:
+    get:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${get_pending_agent_by_id}"
+      summary: Get pending agent by ID
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Admin
+      parameters:
+        - name: agent_id
+          in: path
+          description: ID del agente
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Agent"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${put_pending_agent_by_id}"
+      summary: Approve or deny agent by ID
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Admin
+      parameters:
+        - name: agent_id
+          in: path
+          description: ID del agente
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminPut"
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    options:
+      tags:
+        - Admin
+      parameters:
+        - name: agent_id
+          in: path
+          description: ID del agente
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: CORS preflight response
+          schema:
+            $ref: "#/components/schemas/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              description: Indicates whether the response can be shared with requesting code from the given origin.
+              type: string
+            Access-Control-Allow-Methods:
+              description: Specifies the methods allowed when accessing the resource.
+              type: string
+            Access-Control-Allow-Headers:
+              description: Indicates which headers can be used during the actual request.
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: never
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+
+components:
+  schemas:
+    Province:
+      type: object
+      properties:
+        province:
+          type: string
+      required:
+        - province
+    City:
+      type: object
+      properties:
+        city:
+          type: string
+        province:
+          type: string
+      required:
+        - city
+        - province
+    Experience:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        category:
+          type: string
+        city:
+          type: string
+        province:
+          type: string
+        address:
+          type: string
+        email:
+          type: string
+        price:
+          type: integer
+        siteUrl:
+          type: string
+        description:
+          type: string
+        score:
+          type: integer
+        user_id:
+          type: string
+        views:
+          type: integer
+        observable:
+          type: boolean
+        reviewCount:
+          type: integer
+        favs:
+          type: integer
+        recommended:
+          type: integer
+        status:
+          type: string
+      required:
+        - id
+        - name
+        - category
+        - city
+        - province
+        - address
+        - email
+        - price
+        - siteUrl
+        - description
+        - score
+        - user_id
+        - views
+        - observable
+        - reviewCount
+        - favs
+        - recommended
+        - status
+    ExperiencePost:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 3
+          maxLength: 100
+        category:
+          type: string
+          enum:
+            - aventura
+            - gastronomia
+            - hoteleria
+            - relax
+            - historico
+            - nocturno
+        city:
+          type: string
+        province:
+          type: string
+        address:
+          type: string
+          minLength: 5
+          maxLength: 200
+        email:
+          type: string
+          #format: email
+          pattern: "^([a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+)*$"
+        price:
+          type: integer
+          #minimum: 0
+          nullable: true
+        siteUrl:
+          type: string
+          #format: uri
+          #maxLength: 200
+        description:
+          type: string
+          #minLength: 10
+          #maxLength: 1000
+      required:
+        - name
+        - category
+        - city
+        - province
+        - address
+        - email
+        #- price
+        #- siteUrl
+        #- description
+    ExperiencePut:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 3
+          maxLength: 100
+        category:
+          type: string
+          enum:
+            - aventura
+            - gastronomia
+            - hoteleria
+            - relax
+            - historico
+            - nocturno
+        city:
+          type: string
+        province:
+          type: string
+        address:
+          type: string
+          minLength: 5
+          maxLength: 200
+        email:
+          type: string
+          #format: email
+          pattern: "^([a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+)*$"
+        price:
+          type: integer
+          #minimum: 0
+          nullable: true
+        siteUrl:
+          type: string
+          #format: uri
+          #maxLength: 200
+        description:
+          type: string
+          #minLength: 10
+          #maxLength: 1000
+      required:
+        - name
+        - category
+        - city
+        - province
+        - address
+        - email
+        #- price
+        #- siteUrl
+        #- description
+    Review:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        score:
+          type: integer
+        date:
+          type: string
+        user_id:
+          type: string
+        experience_id:
+          type: string
+        agent_id:
+          type: string
+      required:
+        - id
+        - title
+        - description
+        - score
+        - date
+        - user_id
+        #- experience_id
+        #- agent_id
+    ReviewPost:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 3
+          maxLength: 50
+        description:
+          type: string
+          minLength: 3
+          maxLength: 255
+        score:
+          type: integer
+          minimum: 1
+          maximum: 5 
+        experience_id:
+          type: string
+        agent_id:
+          type: string
+      required:
+        - title
+        - description
+        - score
+    ReviewPut:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 3
+          maxLength: 50
+        description:
+          type: string
+          minLength: 3
+          maxLength: 255
+        score:
+          type: integer
+          minimum: 1
+          maximum: 5 
+      required:
+        - title
+        - description
+        - score
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        surname:
+          type: string
+      required:
+        - id
+        - email
+        - name
+        - surname
+    UserPut:
+      type: object
+      properties:
+        name:
+          type: string
+        surname:
+          type: string
+      required:
+        - name
+        - surname
+    UserExperienceFavourites:
+      type: object
+      properties:
+        favourite_experiences:
+          type: array
+          items:
+            $ref: "#/components/schemas/Experience"
+      required:
+        - favourite_experiences
+    UserExperienceFavouritePut:
+      type: object
+      properties:
+        favourite:
+          type: boolean
+      required:
+        - favourite
+    Agent:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        address:
+          type: string
+        languages:
+          type: string
+        experience:
+          type: integer
+        score:
+          type: integer
+        reviewCount:
+          type: integer
+        bio:
+          type: string
+        agency:
+          type: string
+        specialization:
+          type: string
+        twitter:
+          type: string
+        instagram:
+          type: string
+      required:
+        - id
+        - name
+        - email
+        - phone
+        - address
+        - languages
+        - experience
+        - score
+        - reviewCount
+        - bio
+    AgentPost:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          #format: email
+          pattern: "^([a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+)*$"
+        phone:
+          type: string
+        address:
+          type: string
+        languages:
+          type: string
+        experience:
+          type: integer
+        bio:
+          type: string
+        agency:
+          type: string
+        specialization:
+          type: string
+        twitter:
+          type: string
+        instagram:
+          type: string
+      required:
+        - name
+        - email
+        - phone
+        - address
+        - languages
+        - experience
+        - bio
+    AgentPut:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          #format: email
+          pattern: "^([a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+)*$"
+        phone:
+          type: string
+        address:
+          type: string
+        languages:
+          type: string
+        experience:
+          type: integer
+        bio:
+          type: string
+        agency:
+          type: string
+        specialization:
+          type: string
+        twitter:
+          type: string
+        instagram:
+          type: string
+      required:
+        - name
+        - email
+        - phone
+        - address
+        - languages
+        - experience
+        - bio
+    AgentRecommendationPut:
+      type: object
+      properties:
+        recommend:
+          type: boolean
+      required:
+        - recommend
+    AgentArticle:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        date:
+          type: string
+        agent_id:
+          type: string
+      required:
+        - id
+        - title
+        - description
+        - date
+        - agent_id
+    AgentArticlePost:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+      required:
+        - title
+        - description
+    AgentArticlePut:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+      required:
+        - title
+        - description
+    #TODO verify
+    Trip:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        start_date:
+          type: string
+        end_date:
+          type: string
+        user_id:
+          type: string
+        experiences:
+          type: array
+          items:
+            type: string
+      required:
+        - id
+        - name
+        - description
+        - end_date
+        - start_date
+        - user_id
+        - experiences
+    TripPost:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        start_date:
+          type: string
+        end_date:
+          type: string
+      required:
+        - name
+        - description
+        - start_date
+        - end_date
+    TripPut:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        start_date:
+          type: string
+        end_date:
+          type: string
+      required:
+        - name
+        - description
+        - start_date
+        - end_date
+    TripPutExperience:
+      type: object
+      properties:
+        set:
+          type: boolean
+      required:
+        - set
+    AdminPut:
+      type: object
+      properties:
+        approve:
+          type: boolean
+      required:
+        - approve
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+    Empty:
+      type: object
+    StringResponse:
+      type: string
+    ImagePut:
+      type: object
+      properties:
+        image:
+          type: string
+        content_type:
+          type: string
+      required:
+        - image
+        - content_type
+
+  # When the authorizer is enabled, any incoming request token is first
+  # validated against this Cognito user pool before Lambda is triggered.
+  securitySchemes:
+    CognitoUserPoolAuthorizer:
+      type: "apiKey"
+      name: "Authorization"
+      in: "header"
+      x-amazon-apigateway-authtype: "cognito_user_pools"
+      x-amazon-apigateway-authorizer:
+        type: "cognito_user_pools"
+        providerARNs:
+          - "${cognito_user_pool_arn}"

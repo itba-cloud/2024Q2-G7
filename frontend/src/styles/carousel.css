@@ -1,0 +1,67 @@
+.carousel-container {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.carousel-wrapper {
+    display: flex !important;
+    width: 100% !important;
+    position: relative !important;
+}
+
+.carousel-content-wrapper {
+    overflow: hidden !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.carousel-content {
+    display: flex !important;
+    transition: all 250ms linear !important;
+    -ms-overflow-style: none !important;  /* hide scrollbar in IE and Edge */
+    scrollbar-width: none !important;  /* hide scrollbar in Firefox */
+}
+
+/* hide scrollbar in webkit browser */
+.carousel-content::-webkit-scrollbar, .carousel-content::-webkit-scrollbar {
+    display: none !important;
+}
+
+.carousel-content > * {
+    width: 100% !important;
+    flex-shrink: 0 !important;
+    flex-grow: 1 !important;
+}
+
+.left-arrow, .right-arrow {
+    position: absolute !important;
+    z-index: 1 !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 24px !important;
+    background-color: var(--secondary-color) !important;
+    border: 1px solid #ddd !important;
+}
+
+.left-arrow {
+    left: 24px !important;
+}
+
+.right-arrow {
+    right: 24px !important;
+}
+
+.carousel-content.show-2 > * {
+    width: 50% !important;
+}
+
+.carousel-content.show-3 > * {
+    width: calc(100% / 3) !important;
+}
+
+.carousel-content.show-4 > * {
+    width: calc(100% / 4) !important;
+}

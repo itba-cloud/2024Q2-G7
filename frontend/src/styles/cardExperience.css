@@ -1,0 +1,114 @@
+.card-experience {
+    width: 350px !important;
+    /* height: 500px !important; */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease;
+}
+
+.card-link {
+    text-decoration: none !important;
+    color: black !important;
+}
+
+.card-img-top {
+    width: 100% !important;
+    height: 250px !important;
+    /*object-fit: cover;*/
+}
+
+.btn-fav {
+    position: absolute !important;
+    bottom: 0px !important;
+    right: 5px !important;
+    padding: 3px !important;
+}
+
+
+.experience.card-title:hover {
+    color: black !important;
+    text-decoration: underline !important;
+    /*font-weight: bold;*/
+    cursor: pointer !important;
+}
+
+.title-link a {
+    color: black !important;
+    text-decoration: none !important;
+}
+
+.table-title {
+    font-weight: bold !important;
+    margin: 0 !important;
+}
+
+.obs-info {
+    color: red !important;
+    margin: 0 !important;
+}
+
+a.disabled {
+    pointer-events: none !important;
+    cursor: default !important;
+    text-decoration: none !important;
+}
+
+.category-highlight {
+    background-color: #ffc584;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-weight: bold;
+    color: #333;
+    display: inline-block;
+}
+
+.recommend-section .recommend-toggle {
+    font-size: 1rem;
+    color: #007bff;
+    cursor: pointer;
+}
+
+.recommend-section .recommend-toggle:hover {
+    text-decoration: underline;
+}
+
+.small-text {
+    font-size: 0.75rem; /* Tamaño de texto pequeño */
+    color: #6c757d; /* Color gris para el texto */
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    border-radius: 0.25rem;
+}
+
+.recommend-section {
+    text-align: center;
+}
+
+.small-text {
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+
+
+@media (max-width: 768px) {
+    .container-fluid {
+        flex-direction: column;
+    }
+
+    .review-section {
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+    .fav-section {
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+    .recommend-section {
+        justify-content: center;
+    }
+}
