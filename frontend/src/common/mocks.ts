@@ -145,11 +145,11 @@ export const reviewModel2: ReviewModel = {
     experience_id: "1",
 };
 
-export const trip: TripModel = {
+export const tripModel: TripModel = {
     id: "1",
     name: "Viaje a Bariloche, Argentina",
-    startDate: "2024-12-15",
-    endDate: "2024-12-22",
+    start_date: "2024-12-15",
+    end_date: "2024-12-22",
     description: "Un viaje para explorar la Patagonia."
 }
 
@@ -188,10 +188,5 @@ export const arrAgents: AgentModel[] = [
 ]
 
 export const arrTrips: TripModel[] = [
-    trip, trip, trip, trip
+    tripModel, tripModel, tripModel, tripModel
 ]
-
-
-export const arrOrders: OrderByModel = {
-    orders: ["OrderByRankAsc", "OrderByRankDesc", "OrderByAZ", "OrderByZA", "OrderByLowPrice", "OrderByHighPrice", 'OrderByNewest', 'OrderByOldest'],
-};

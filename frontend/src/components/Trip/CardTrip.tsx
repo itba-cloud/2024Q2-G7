@@ -16,17 +16,19 @@ export default function CardTrip(props: { trip: TripModel }) {
                     {trip.name}
                 </h3>
                 <p className="card-text text-left px-2">
-                    <strong>{t('Trips.startDate')}</strong> {trip.startDate}
+                    <strong>{t('Trips.startDate')}</strong> {trip.start_date}
                 </p>
                 <p className="card-text text-left px-2">
-                    <strong>{t('Trips.endDate')}</strong> {trip.endDate}
+                    <strong>{t('Trips.endDate')}</strong> {trip.end_date}
                 </p>
                 <p className="card-text text-left px-2 fs-5">
                     {trip.description}
                 </p>
                 <div className="d-flex justify-content-center mt-0">
-                    <Link to={`/user/trips/${trip.id}`} className="btn btn-trip-detail">
-                        {t("Ver detalles")}
+                    <Link to={`/user/trips/${trip.id}`} className="btn btn-trip-detail"
+                        state={{ trip }}
+                    >
+                        {t('Trips.viewDetails')}
                     </Link>
                 </div>
             </div>

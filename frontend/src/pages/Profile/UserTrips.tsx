@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { useTranslation } from 'react-i18next';
 import CardTrip from '../../components/Trip/CardTrip';
-import TripForm from '../../components/Trip/TripModalForm';
+import TripForm, { FormDataTrip } from '../../components/Trip/TripModalForm';
 import { TripModel } from '../../types';
 import { useAuthNew } from "../../context/AuthProvider";
 import { AuthService } from "../../services/AuthService";
@@ -10,6 +10,7 @@ import { userService } from "../../services";
 import { useNavigate } from "react-router-dom";
 import DataLoader from "../../components/DataLoader";
 import ic_no_search from "../../images/ic_no_search.jpeg";
+import { showToast } from "../../scripts/toast";
 
 export default function UserTrips() {
 
@@ -35,10 +36,19 @@ export default function UserTrips() {
         )
     }, [])
 
-    const handleCreateTrip = (trip: { name: string; startDate: string; endDate: string; description: string }) => {
-        // Aquí agregarías la lógica para guardar el nuevo viaje
-        //TODO
-        setShowModal(false);
+    const handleCreateTrip = (trip: FormDataTrip) => {
+        //TODO use serviceHandler
+        userService.createUserTrip(session.id, trip.name, trip.start_date, trip.end_date, trip.description)
+            .then((result) => {
+                if (!result.hasFailed()) {
+                    setShowModal(false);
+                    navigate(`/user/trips`, { replace: true })
+                    showToast(t('Trips.toast.createSuccess', { name: trip.name }), 'success')
+                }
+            })
+            .catch(() => {
+                showToast(t('Trips.toast.createError', { name: trip.name }), 'error')
+            })
     };
 
     const handleCancel = () => {

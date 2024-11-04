@@ -121,31 +121,57 @@ def main(event, context):
         
     dynamodb = boto3.resource('dynamodb')
     table_name = os.getenv('USERS_TABLE_NAME', 'users-table')
-    table = dynamodb.Table(table_name)
+    users_table = dynamodb.Table(table_name)
     PK = 'USERS'
 
-    #TODO estaria bueno aumentar el campos 'favs' de la experiencia para saber cuantas personas le dieron fav
+    experience_table = os.getenv('EXPERIENCES_TABLE_NAME', 'experiences-table')
+    experiences_table = dynamodb.Table(experience_table)
+
+    fav_experiences_ids = None
+    if 'favourite_experiences' in user and user['favourite_experiences']:
+        fav_experiences_ids = set(user['favourite_experiences'])
+    else:
+        fav_experiences_ids = set()
+
 
     if fav:
         try:
-            table.update_item(
+            users_table.update_item(
                 Key={'PK': PK, 'id': user_id},
                 UpdateExpression='ADD favourite_experiences :experience_id',
                 ExpressionAttributeValues={':experience_id': set([experience_id])},
                 ReturnValues="UPDATED_NEW"
             )
+
+            # Aumentar el campo 'favs' de la experiencia
+            if experience_id not in fav_experiences_ids:
+                experiences_table.update_item(
+                    Key={'category': experience['category'], 'id': experience_id},
+                    UpdateExpression='ADD favs :increment',
+                    ExpressionAttributeValues={':increment': 1}
+                )
+
             return build_response(200, 'Experience added to user favourites')
 
         except ClientError as e:
             return build_response(500, 'Failed to update user favourite experiences')
     else:
         try:
-            table.update_item(
+            users_table.update_item(
                 Key={'PK': PK, 'id': user_id},
                 UpdateExpression='DELETE favourite_experiences :experience_id',
                 ExpressionAttributeValues={':experience_id': set([experience_id])},
                 ReturnValues="UPDATED_NEW"
             )
+
+            # Disminuir el campo 'favs' de la experiencia
+            if experience_id in fav_experiences_ids:
+                experiences_table.update_item(
+                    Key={'category': experience['category'], 'id': experience_id},
+                    UpdateExpression='ADD favs :decrement',
+                    ExpressionAttributeValues={':decrement': -1}
+                )
+
             return build_response(200, 'Experience removed from user favourites')
 
         except ClientError as e:

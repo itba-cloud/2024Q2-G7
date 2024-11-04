@@ -58,7 +58,7 @@ const AgentForm = ({ agent, setAgent, isCreating, setIsCreating, isEditing, setI
         if (agent === undefined) {
             agentsService.createAgent(
                 data.name, data.email, data.phone,
-                data.address, data.languages, data.experience,
+                data.address, data.languages, Number(data.experience),
                 data.bio, data.agency, data.specialization,
                 data.twitter, data.instagram
             )
@@ -78,7 +78,7 @@ const AgentForm = ({ agent, setAgent, isCreating, setIsCreating, isEditing, setI
             agentsService.updateAgentById(
                 agent.id,
                 data.name, data.email, data.phone,
-                data.address, data.languages, data.experience,
+                data.address, data.languages, Number(data.experience),
                 data.bio, data.agency, data.specialization,
                 data.twitter, data.instagram
             )

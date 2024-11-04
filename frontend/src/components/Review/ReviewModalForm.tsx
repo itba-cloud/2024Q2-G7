@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import StarRoundedIcon from "@mui/icons-material/StarRounded"
-import { ReviewModel } from '../../types';
+import { AgentModel, ExperienceModel, ReviewModel } from '../../types';
 
 export type FormDataReview = {
     title: string,
@@ -14,13 +14,14 @@ interface ReviewFormProps {
     review: ReviewModel | undefined
     onSave: (review: FormDataReview) => void;
     onCancel: () => void;
+    experience?: ExperienceModel;
+    agent?: AgentModel
 }
 
-const ReviewModalForm: React.FC<ReviewFormProps> = ({ review, onSave, onCancel }) => {
+const ReviewModalForm: React.FC<ReviewFormProps> = ({ review, onSave, onCancel, experience, agent }) => {
     const { t } = useTranslation();
     
     const onEdit = review ? true : false;
-    const isExperienceReview = review?.experience_id ? true : false;
 
     const [title, setTitle] = useState(review?.title || '');
     const [description, setDescription] = useState(review?.description || '');
@@ -67,9 +68,9 @@ const ReviewModalForm: React.FC<ReviewFormProps> = ({ review, onSave, onCancel }
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title fw-bold fs-4" id="exampleModalLabel">
-                                {isExperienceReview 
-                                    ? (onEdit ? t('Review.edit') : t('Review.create')) 
-                                    : (onEdit ? t('Testimonial.edit') : t('Testimonial.create'))
+                                {experience 
+                                    ? (onEdit ? t('Review.edit', { name: experience.name }) : t('Review.create', { name: experience.name })) 
+                                    : (onEdit ? t('Testimonial.edit', { name: agent?.name }) : t('Testimonial.create', { name: agent?.name }))
                                 }
                             </h5>
                             <button type="button" className="btn-close"

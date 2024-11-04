@@ -28,15 +28,16 @@ def build_response(status_code, body):
 def validate_body_params(body):
     errors = []
     name = body.get('name')
-    start_date = body.get('startDate')
-    end_date = body.get('endDate')
+    description = body.get('description')
+    start_date = body.get('start_date')
+    end_date = body.get('end_date')
 
     if name is None:
         errors.append("Name is required")
-
+    if description is None:
+        errors.append("Description is required")
     if start_date is None:
         errors.append("Start date is required")
-
     if end_date is None:
         errors.append("End date is required")
 
@@ -57,10 +58,7 @@ def check_trip_exists(user_id, id):
 
     try:
         response = table.get_item(
-            Key={
-                'user_id': user_id,
-                'id': id
-            }
+            Key={ 'user_id': user_id, 'id': id }
         )
         return 'Item' in response
     except ClientError as e:
@@ -101,11 +99,10 @@ def main(event, context):
         return build_response(400, {'error': validation_errors})
 
     name = body.get('name')
-    start_date = body.get('startDate')
-    end_date = body.get('endDate')
     description = body.get('description')
+    start_date = body.get('start_date')
+    end_date = body.get('end_date')
     user_id = decoded_token['sub']
-    experiences = set()  
 
     dynamodb = boto3.resource('dynamodb')
     table_name = os.getenv('TRIPS_TABLE_NAME', 'trips-table')
@@ -120,20 +117,18 @@ def main(event, context):
         return build_response(400, {'error': 'Trip already exists'})
 
     trip_item = {
-        'user_id': user_id,  
         'id': trip_id,  
+        'user_id': user_id,  
         'name': name,
         'start_date': start_date,
         'end_date': end_date,
         'description': description,
-        'experiences': experiences  
     }
 
     try:
         table.put_item(Item=trip_item)
     except ClientError as e:
         return build_response(500, {'error': f'Failed to create trip: {str(e)}'})
-
 
     return build_response(201, {
         'message': 'Trip created successfully',

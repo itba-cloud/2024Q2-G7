@@ -30,13 +30,13 @@ export default function UserArticles() {
     const [searchParams, setSearchParams] = useSearchParams();
     const [isLoading, setIsLoading] = useState(false)
 
-    const [maxPage, setMaxPage] = useState(0)
+    /* const [maxPage, setMaxPage] = useState(0)
     const currentPage = useState<number>(
         !isNaN(parseInt(getQueryOrDefault(query, "page", "1"))) ?
             parseInt(getQueryOrDefault(query, "page", "1")) :
             1
     )
-    const pageToShow = useState<number>(1)
+    const pageToShow = useState<number>(1) */
 
     const onEdit = useState(false)
 
@@ -87,7 +87,7 @@ export default function UserArticles() {
                             ))}
                         </div>
     
-                        <div className="mt-auto d-flex justify-content-center align-items-center">
+                        {/* <div className="mt-auto d-flex justify-content-center align-items-center">
                             {maxPage > 1 && (
                                 <Pagination
                                     maxPage={maxPage}
@@ -95,7 +95,7 @@ export default function UserArticles() {
                                     pageToShow={pageToShow}
                                 />
                             )}
-                        </div>
+                        </div> */}
                     </>
                 )}
                 <ConfirmDialogModal />

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { ExperienceModel } from "../../types";
 import UserExperiencesTableRow from "./UserExperiencesTableRow";
 import { Table } from "react-bootstrap";
+import { FavoriteBorder } from "@mui/icons-material";
 
 export default function UserExperiencesTable(props: {
     experiences: ExperienceModel[],
@@ -24,6 +25,7 @@ export default function UserExperiencesTable(props: {
                     <th className="text-center"><h4 className="table-title">{t('User.experiences.score')}</h4></th>
                     <th className="text-center"><h4 className="table-title">{t('User.experiences.price')}</h4></th>
                     <th className="text-center"><h4 className="table-title">{t('User.experiences.views')}</h4></th>
+                    <th className="text-center"><h4 className="table-title"><FavoriteBorder style={{fontSize: 'xx-large'}}/></h4></th>
                     <th className="text-center"><h4 className="table-title">{t('User.experiences.actions')}</h4></th>
                 </tr>
             </thead>

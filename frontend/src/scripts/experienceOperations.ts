@@ -1,5 +1,5 @@
 import { ExperienceModel, TripModel } from "../types";
-import { userService, experienceService } from "../services";
+import { userService, experienceService, agentsService } from "../services";
 import { showToast } from "./toast";
 import { NavigateFunction } from "react-router-dom";
 import { Dispatch, SetStateAction } from "react";
@@ -33,6 +33,7 @@ export function setFavExperience(
     experience: ExperienceModel,
     fav: boolean,
     setFav: Dispatch<SetStateAction<boolean>>,
+    favsCounter:[number, Dispatch<SetStateAction<number>>],
     t: TFunction,
     AuthContext: any
 ) {
@@ -41,8 +42,10 @@ export function setFavExperience(
         .then(() => {
             AuthService.updateFavourites(AuthContext, experience, fav)
             if (fav) {
+                favsCounter[1](favsCounter[0] + 1)
                 showToast(t('Experience.toast.favSuccess', { experienceName: experience.name }), "success")
             } else {
+                favsCounter[1](favsCounter[0] - 1)
                 showToast(t('Experience.toast.noFavSuccess', { experienceName: experience.name }), "success")
             }
             setFav(fav)
@@ -52,6 +55,34 @@ export function setFavExperience(
                 showToast(t('Experience.toast.favError', { experienceName: experience.name }), "error")
             } else {
                 showToast(t('Experience.toast.noFavError', { experienceName: experience.name }), "error")
+            }
+        });
+}
+
+export function setRecommendedExperience(
+    agentId: string,
+    experience: ExperienceModel,
+    recommend: boolean,
+    setRecommended: Dispatch<SetStateAction<boolean>>,
+    t: TFunction,
+    AuthContext: any
+) {
+    //TODO en realidad habria que usar el serviceHandler para catcher los errores
+    agentsService.setExperienceRecommendation(agentId, experience.id, recommend)
+        .then(() => {
+            AuthService.updateRecommended(AuthContext, experience, recommend)
+            if (recommend) {
+                showToast(t('Experience.toast.recommendedSuccess', { experienceName: experience.name }), "success")
+            } else {
+                showToast(t('Experience.toast.noRecommendedSuccess', { experienceName: experience.name }), "success")
+            }
+            setRecommended(recommend)
+        })
+        .catch(() => {
+            if (recommend) {
+                showToast(t('Experience.toast.recommendedError', { experienceName: experience.name }), "error")
+            } else {
+                showToast(t('Experience.toast.noRecommendedError', { experienceName: experience.name }), "error")
             }
         });
 }

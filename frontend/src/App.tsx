@@ -31,6 +31,7 @@ import AdminPage from './pages/Admin/AdminPage';
 import AdminExperienceDetails from './pages/Admin/AdminExperienceDetails';
 import AdminAgentDetails from './pages/Admin/AdminAgentDetails';
 import UserArticles from './pages/Profile/UserArticles';
+import UserRecommendations from './pages/Profile/UserRecommendations';
 
 function App() {
     const categoryProp = useState<string | undefined>(undefined)
@@ -55,6 +56,7 @@ function App() {
                         <Route path='favourites' element={<UserFavourites />} />
                         <Route path='reviews' element={<UserReviews />} />
                         <Route path='articles' element={<UserArticles />} />
+                        <Route path='recommendations' element={<UserRecommendations />} />
                     </Route>
                     <Route path='/admin' element={<AdminPage />}>
                         <Route path='experiences/:experienceId' element={<AdminExperienceDetails />} />

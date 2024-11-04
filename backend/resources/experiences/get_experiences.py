@@ -145,6 +145,9 @@ def main(event, context):
         response = table.query(**query_kwargs)
         experiences = response.get('Items', [])
 
+        if not experiences:
+            return build_response(204, {})
+
         # Sort the experiences based on the order parameter
         if order == 'OrderByAZ':
             experiences = sorted(experiences, key=lambda x: x.get('name', ''))
@@ -162,9 +165,6 @@ def main(event, context):
             experiences = sorted(experiences, key=lambda x: datetime.strptime(x.get('timestamp', ''), "%d-%m-%Y %H:%M:%S"), reverse=True)
         elif order == 'OrderByOldest':
             experiences = sorted(experiences, key=lambda x: datetime.strptime(x.get('timestamp', ''), "%d-%m-%Y %H:%M:%S"))
-
-        if not experiences:
-            return build_response(204, {})
         
         return build_response(200, experiences)
 

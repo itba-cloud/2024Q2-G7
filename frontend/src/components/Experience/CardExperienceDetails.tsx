@@ -11,7 +11,7 @@ import StarRating from "../Review/StarRating";
 import ConfirmDialogModal, { confirmDialogModal } from "../ConfirmDialogModal";
 import { Favorite, FavoriteBorder } from "@mui/icons-material";
 import AddPictureModal from "../AddPictureModal";
-import { deleteExperience, editExperience, setExperienceInUserTrip, setFavExperience, setVisibility } from "../../scripts/experienceOperations";
+import { deleteExperience, editExperience, setExperienceInUserTrip, setFavExperience, setRecommendedExperience, setVisibility } from "../../scripts/experienceOperations";
 import Price from "./Price";
 // @ts-ignore
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -25,6 +25,8 @@ import { useAuthNew } from "../../context/AuthProvider";
 import { AuthService } from "../../services/AuthService";
 import DataLoader from "../DataLoader";
 import { fetchImageUrl } from "../../scripts/getImage";
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 
 export default function CardExperienceDetails(props: { 
     experience: ExperienceModel,
@@ -35,17 +37,21 @@ export default function CardExperienceDetails(props: {
     const navigate = useNavigate()
 
     const AuthContext = useAuthNew();
-    const isLogged = AuthService.isLoggedIn(AuthContext)
     const session = AuthService.getSessionFromContext(AuthContext);
+    const isAgent = AuthService.isAgent(AuthContext);
 
     const [isEditing, setIsEditing] = useState<boolean | undefined>(session && (experience.user_id === session.id))
 
     const [trips, setTrips] = useState<TripModel[]>(new Array(0))
 
-    const isOpenImage = useState(false)
+    const favsCounter = useState<number>(experience.favs)
     const [isFav, setIsFav] = useState(false)
+    const [isRecommended, setIsRecommended] = useState(false)
+
     const [view, setView] = useState(experience.observable)
+
     const [imageUrl, setImageUrl] = useState<string | null>(null);
+    const isOpenImage = useState(false)
 
     const [isLoading, setIsLoading] = useState(false)
     const [isLoadingImage, setIsLoadingImage] = useState(false)
@@ -56,18 +62,14 @@ export default function CardExperienceDetails(props: {
             setImageUrl,
             setIsLoadingImage
         )
-        if (isLogged || session !== null) {
+        if (session !== null) {
             setIsLoading(true)
-            /* serviceHandler(
-                userService.isExperienceFav(session.id, experience.id),
-                navigate, (isFavResponse) => { setIsFav(isFavResponse.favourite) },
-                () => { },
-                () => { setIsFav(false); }
-            ) */
             if (AuthService.isFavourite(AuthContext, experience.id)) setIsFav(true)
+            if (AuthService.isRecommended(AuthContext, experience.id)) setIsRecommended(true)
+
             serviceHandler(
                 userService.getUserTrips(session.id),
-                navigate, (trips) => { setTrips(trips)},
+                navigate, (trips) => { setTrips(trips) },
                 () => { setIsLoading(false); },
                 () => { setTrips(new Array(0)) }
             )
@@ -109,16 +111,48 @@ export default function CardExperienceDetails(props: {
                             </p>
                         </div>
 
+                        {/* Sección de recomendados */}
+                        {session && isAgent && (
+                            <div className="recommend-section d-flex flex-column align-items-center mt-2 mt-md-0">
+                                <button
+                                    className={`btn btn-sm d-flex align-items-center ${isRecommended ? 'btn-danger' : 'btn-primary'}`}
+                                    aria-label={isRecommended ? t("Agents.unrecommend") : t("Agents.recommend")}
+                                    title={isRecommended ? t("Agents.unrecommend") : t("Agents.recommend")}
+                                    onClick={() => {
+                                        setRecommendedExperience(session.id, experience, !isRecommended, setIsRecommended, t, AuthContext);
+                                    }}
+                                >
+                                    {isRecommended ? (
+                                        <>
+                                            <ThumbDownIcon className="me-1" />{/* {t("Agents.unrecommend")} */}
+                                        </>
+                                    ) : (
+                                        <>
+                                            <ThumbUpIcon className="me-1" /> {/* {t("Agents.recommend")} */}
+                                        </>
+                                    )}
+                                </button>
+                                {/* TODO poner esto */}
+                                {/* <span className="small-text mt-1">{experience.recommended}</span> */}
+                            </div>
+                        )}
+
                         {/* Botón de favoritos */}
-                        <div className="p-0">
-                            {isLogged || session ? (
+                        <div className="d-flex flex-column align-items-center">
+                            {session ? (
                                 <div>
                                     {isFav ? (
-                                        <IconButton onClick={() => setFavExperience(session.id, experience, false, setIsFav, t, AuthContext)} aria-label={t("AriaLabel.fav")} title={t("AriaLabel.fav")}>
+                                        <IconButton onClick={() => setFavExperience(session.id, experience, false, setIsFav, favsCounter, t, AuthContext)} 
+                                            aria-label={t("AriaLabel.fav")} title={t("AriaLabel.fav")}
+                                            className="p-0"
+                                            >
                                             <Favorite className="fa-heart heart-color" />
                                         </IconButton>
                                     ) : (
-                                        <IconButton onClick={() => setFavExperience(session.id, experience, true, setIsFav, t, AuthContext)} aria-label={t("AriaLabel.fav")} title={t("AriaLabel.fav")}>
+                                        <IconButton onClick={() => setFavExperience(session.id, experience, true, setIsFav, favsCounter, t, AuthContext)}
+                                            aria-label={t("AriaLabel.fav")} title={t("AriaLabel.fav")}
+                                            className="p-0"
+                                            >
                                             <FavoriteBorder className="fa-heart" />
                                         </IconButton>
                                     )}
@@ -126,6 +160,7 @@ export default function CardExperienceDetails(props: {
                             ) : (
                                 <div>
                                     <IconButton aria-label={t("AriaLabel.fav")} title={t("AriaLabel.fav")}
+                                        className="p-0"
                                         onClick={() => {
                                             //clearNavBar();
                                             navigate("/login", { replace: true });
@@ -135,6 +170,7 @@ export default function CardExperienceDetails(props: {
                                     </IconButton>
                                 </div>
                             )}
+                            <span className="small-text mt-1">{favsCounter[0]}</span>
                         </div>
                     </div>
 
@@ -193,7 +229,7 @@ export default function CardExperienceDetails(props: {
                             </div>
 
                             {/* Botón de agregar a trips */}
-                            {isLogged && 
+                            {session && 
                                 <div className="dropdown mt-4">
                                     <button
                                         className="btn button-add-to-trips d-flex align-items-center"

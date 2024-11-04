@@ -24,6 +24,7 @@ export const TRANSLATIONS_ES = {
         userProfile: "Mi Perfil",
         userReviews: "Mis Reseñas",
         userArticles: "Mis Articulos",
+        userRecommendations: "Mis recomendados",
         userTrips: "Mis viajes",
         tripDetails: "{{tripName}}",
         agents: "Agentes",
@@ -63,6 +64,7 @@ export const TRANSLATIONS_ES = {
         favourites: "Mis favoritos",
         reviews: "Mis reseñas",
         articles: "Mis articulos",
+        recommendations: "Mis recomendados",
         logout: "Cerrar sesión",
         resetPasswordTitle: "Ingresa tu email y recibe un enlace de recuperación",
         resetPasswordButton: "Enviar",
@@ -134,8 +136,8 @@ export const TRANSLATIONS_ES = {
             imageError: "Error del servidor al actualizar la imagen",
             favSuccess: "'{{experienceName}}' se ha agregado a tus favoritos",
             noFavSuccess: "'{{experienceName}}' se ha quitado de tus favoritos",
-            favError: "Error del servidor al agregar '{{experienceName}}'",
-            noFavError: "Error del servidor al quitar '{{experienceName}}'",
+            favError: "Error del servidor al agregar '{{experienceName}}' a favoritos",
+            noFavError: "Error del servidor al quitar '{{experienceName}}' a favoritos",
             favNotSigned: "Inicia sesión para guardar en favoritos",
             visibilitySuccess: "'{{experienceName}}' ahora se encuentra visible para todos los usuarios",
             noVisibilitySuccess: "Se ha ocultado '{{experienceName}}'",
@@ -146,6 +148,10 @@ export const TRANSLATIONS_ES = {
             removeTripSuccess: "'{{experienceName}}' eliminada de '{{tripName}}'",
             addTripError: "Error del servidor al agregar '{{experienceName}}' en '{{tripName}}'",
             removeTripError: "Error del servidor al eliminar '{{experienceName}}' en '{{tripName}}'",
+            recommendedSuccess: "'{{experienceName}}' se ha recomendado",
+            noRecommendedSuccess: "{{experienceName}}' se ha eliminado de recomendados",
+            recommendedError: "Error del servidor al agregar '{{experienceName}}' de recomendados",
+            noRecommendedError: "Error del servidor al quitar '{{experienceName}}' de recomendados",
         },
     },
 
@@ -258,6 +264,8 @@ export const TRANSLATIONS_ES = {
         noTrips: "Aún no has creado ningun viaje",
         articlesTitle: "Mis articulos",
         noArticles: "Aún no has escrito ningun articulo",
+        recommendedTitle: "Mis recomendados",
+        noRecommended: "Aún no has recomendado ninguna experiencia",
         imgTitle: "Selecciona una imagen de perfil",
         toast: {
             imageSuccess: "¡Imagen de perfil actualizada con éxito!",
@@ -328,16 +336,20 @@ export const TRANSLATIONS_ES = {
 
     Order: {
         title: "Ordenar por: ",
-        OrderByRankAsc: "Puntaje ascendente",
-        OrderByRankDesc: "Puntaje descendente",
         OrderByAZ: "A-Z",
         OrderByZA: "Z-A",
+        OrderByRankAsc: "Menor puntaje",
+        OrderByRankDesc: "Mayor puntaje",
         OrderByLowPrice: "Menor precio",
         OrderByHighPrice: "Mayor precio",
-        OrderByViewAsc: "Menos vistas",
-        OrderByViewDesc: "Más vistas",
+        OrderByViewsAsc: "Menor visitas",
+        OrderByViewsDesc: "Mayor visitas",
         OrderByNewest: "Ultimos agregados", 
-        OrderByOldest: "Primeros agregados"
+        OrderByOldest: "Primeros agregados",
+        OrderByPendings: "Primero pendientes",
+        OrderByApproved: "Primero aprobados",
+        OrderByFavsAsc: "Menos favoritos",
+        OrderByFavsDesc: "Mas favoritos",
     },
 
     Landing: {
@@ -392,7 +404,7 @@ export const TRANSLATIONS_ES = {
             success: "¡Bienvenido {{name}} {{surname}}!",
             successEmail: "¡Bienvenido {{email}}!",
             error: "Error del servidor al intentar iniciar sesión",
-            verifySent: "Codigo de verificación enviado al email",
+            verifySent: "Código de verificación enviado al email",
         },
         invalidCredentials: "El mail o contraseña ingresados son incorrectos"
     },
@@ -417,8 +429,8 @@ export const TRANSLATIONS_ES = {
     },
 
     Review: {
-        create: "Escribe una reseña para {{experienceName}}",
-        edit: "Edita la reseña para {{experienceName}}",
+        create: "Escribe una reseña para {{name}}",
+        edit: "Edita la reseña para {{name}}",
         form: {
             title: "Título",
             description: "Descripción",
@@ -450,6 +462,7 @@ export const TRANSLATIONS_ES = {
             createError: "Error del servidor al crear la reseña '{{reviewTitle}}'",
             updateSuccess: "¡'{{reviewTitle}}' actualizada con éxito!",
             updateError: "Error del servidor al actualizar la reseña '{{reviewTitle}}'",
+            alreadyCreate: "Ya creaste una reseña para esta experiencia",
             forbidden: {
                 noUser: "Inicia sesión para crear reseñas",
                 notAllowed: "No tienes permisos para modificar esta reseña",
@@ -458,8 +471,8 @@ export const TRANSLATIONS_ES = {
     },
 
     Testimonial: {
-        create: "Escribe un tesmtimonio para {{agent}}",
-        edit: "Edita el testimonio para {{agent}}",
+        create: "Escribe un testimonio para {{name}}",
+        edit: "Edita el testimonio para {{name}}",
         deleteModal: {
             title: "Eliminar testimonio",
             confirmDelete: "¿Está seguro que desea eliminar el testimonio: {{title}}?",
@@ -471,6 +484,7 @@ export const TRANSLATIONS_ES = {
             createError: "Error del servidor al crear el testimonio: '{{title}}'",
             updateSuccess: "¡'{{title}}' actualizada con éxito!",
             updateError: "Error del servidor al actualizar el testimonio '{{title}}'",
+            alreadyCreate: "Ya creaste un testimonio para este agente",
             forbidden: {
                 noUser: "Inicia sesión para crear testimonios a los agentes",
                 notAllowed: "No tienes permisos para modificar este testimonio",
@@ -595,6 +609,16 @@ export const TRANSLATIONS_ES = {
         endDate: "Fecha de fin: ",
         description: "Descripción: ",
         editTrip: "Editar viaje",
+        viewDetails: "Ver detalle",
+        noExperiences: "Aún no has agregado ninguna experiencia a tu viaje",
+        toast: {
+            createSuccess: "¡'{{name}}' creada con éxito!",
+            createError:  "Error del servidor al crear el viaje '{{name}}'",
+            updateSuccess: "¡'{{name}}' actualizada con éxito!",
+            updateError: "Error del servidor al actualizar el viaje '{{name}}'",
+            deleteSuccess: "'{{name}}' se ha borrado con éxito",
+            deleteError: "Error del servidor al borrar el viaje '{{name}}'",
+        },
         dropdown: {
             noTrips: "No tienes viajes creados",
         }
@@ -605,12 +629,14 @@ export const TRANSLATIONS_ES = {
         noAgents: "Parece que todavia no hay ningun agente registrado",
         rating: "Puntaje",
         contactInfo: "Informacion de contacto",
-        tours: "Tours recomendados",
+        recommended: "Experiencias recomendadas",
         writeTestimonial: "Escribir testimonio",
         testimonials: "Testimonios",
         noTestimonials: "Este agente no tiene testimonios aún. Sé el primero en realizar uno!",
         viewProfile: "Ver perfil",
         imgTitle: "Selecciona una imagen de perfil de agente",
+        recommend: "Recomendar",
+        unrecommend: "No recomendar",
         form: {
             title: "Mi agente",
             name: "Nombre",
@@ -655,18 +681,18 @@ export const TRANSLATIONS_ES = {
     },
 
     ConfirmEmail: {
-        confirmEmail: "Te enviamos un codigo a tu email",
+        confirmEmail: "Te enviamos un código a tu email",
         email: "Email",
         emailPlaceholder: "example@example.com",
-        code: "Codigo",
-        resendCode: "Reenviar codigo",
-        checkCode: "Verificar codigo",
+        code: "Código",
+        resendCode: "Reenviar código",
+        checkCode: "Verificar código",
         toast: {
             confirmedEmail: "Email confirmado",
             alreadyConfirmed: "Tu email ya se encuentra confirmado",
             pleaseTryAgain: "Por favor, intenta devuelta!",
             emailRequired: "Email requerido",
-            codeResent: "Codigo reenviado"
+            codeResent: "Código reenviado"
         }
     }
 };

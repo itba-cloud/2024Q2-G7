@@ -80,5 +80,4 @@ def main(event, context):
         return build_response(204, {})
 
     items = convert_sets_to_lists(items)
-
     return build_response(200, items)

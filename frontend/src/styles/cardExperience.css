@@ -61,3 +61,54 @@ a.disabled {
     color: #333;
     display: inline-block;
 }
+
+.recommend-section .recommend-toggle {
+    font-size: 1rem;
+    color: #007bff;
+    cursor: pointer;
+}
+
+.recommend-section .recommend-toggle:hover {
+    text-decoration: underline;
+}
+
+.small-text {
+    font-size: 0.75rem; /* Tamaño de texto pequeño */
+    color: #6c757d; /* Color gris para el texto */
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    border-radius: 0.25rem;
+}
+
+.recommend-section {
+    text-align: center;
+}
+
+.small-text {
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+
+
+@media (max-width: 768px) {
+    .container-fluid {
+        flex-direction: column;
+    }
+
+    .review-section {
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+    .fav-section {
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+    .recommend-section {
+        justify-content: center;
+    }
+}

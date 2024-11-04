@@ -31,7 +31,7 @@ def decode_jwt(token):
         return decoded_payload
     except Exception as e:
         raise Exception(f"Error decoding token: {str(e)}")
-
+    
 def convert_sets_to_lists(data):
     if isinstance(data, set):
         return list(data)
@@ -44,6 +44,9 @@ def convert_sets_to_lists(data):
 def main(event, context):
     path_params = event.get('pathParameters') or {}
     trip_id = path_params.get('trip_id')
+
+    if not trip_id:
+        return build_response(400, {'error': 'Trip ID parameter is required'})
 
     headers = event['headers']
     if not headers:
@@ -71,45 +74,17 @@ def main(event, context):
     table = dynamodb.Table(table_name)
 
     try:
-        response = table.get_item(Key={ 'user_id': user_id, 'id': trip_id })
-        
-        trip = response.get('Item', None)  
-
-        if trip == None:
-            return build_response(404, {'error': 'Trip not found'})
-        
+        response = table.get_item(
+            Key={ 'user_id': user_id, 'id': trip_id }
+        )
     except Exception as e:
         return build_response(500, {'error': f'Failed to get trip: {str(e)}'})
     
-    experience_ids = list(trip.get('experiences', set()))  # Convertimos el set a lista
-    
-    experience_details = []
-    
-    dynamodb = boto3.resource('dynamodb')
-    experiences_table = os.getenv('EXPERIENCES_TABLE_NAME', 'experiences-table')
-    table = dynamodb.Table(experiences_table)
-    STATUS = 'VERIFIED'
+    trip = response.get('Item', None)  
 
-    for experience_id in experience_ids:
-        try:
-            response = table.query(
-                IndexName='ByStatusIndex',  
-                KeyConditionExpression=Key('status').eq(STATUS) & Key('id').eq(experience_id)
-            )
-            
-            if 'Items' in response and len(response['Items']) > 0:
-                experience_details.append(response['Items'][0]) 
-        except Exception as e:
-            return build_response(500, {'error': f'Failed to get trip experience: {str(e)}'})
+    if trip == None:
+        return build_response(404, {'error': 'Trip not found'})
     
-    trip_item_complete = {
-        'user_id': trip['user_id'],
-        'id': trip['id'],
-        'name': trip['name'],
-        'start_date': trip['start_date'],
-        'end_date': trip['end_date'],
-        'description': trip['description'],
-        'experiences': experience_details  
-    }
-    
-    return build_response(200, trip_item_complete)
+    trip = convert_sets_to_lists(trip) 
+    return build_response(200, trip)
+

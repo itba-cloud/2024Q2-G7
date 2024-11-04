@@ -68,6 +68,7 @@ export default function AgentDetails() {
                     navigate(`/agents/${parsedAgentId}`, { replace: true })
                     showToast(t('Testimonial.toast.createSuccess', { title: data.title }), 'success')
                 }
+                if (result.getStatusCode() === 400) showToast(t('Testimonial.toast.alreadyCreate'), 'error')
             })
             .catch(() => {
                 showToast(t('Testimonial.toast.createError', { title: data.title }), 'error')
@@ -187,6 +188,7 @@ export default function AgentDetails() {
                                 review={undefined}
                                 onSave={handleCreateReviewAgent}
                                 onCancel={handleCancelReviewAgent}
+                                agent={agent}
                             />
                         )}
                 </div>

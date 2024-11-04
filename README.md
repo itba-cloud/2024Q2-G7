@@ -16,9 +16,9 @@
 
 ## Ejecución del proyecto
 
-1. Crear archivo `terraform.tfvars` en la carpeta `/backend` con las siguientes variables:
-    - `aws_region`: region de AWS a deployar.
-    - `project_name`: nombre del proyecto (debe ser unico).
+1. Crear archivo `terraform.tfvars` con las siguientes variables:
+    - `aws_region`: región de AWS a deployar.
+    - `project_name`: nombre del proyecto (debe ser único).
     - `admin_password`: contraseña del administrador.
 
 2. Configurar las credenciales del usuario de AWS a utilizar en el archivo ~/.aws/credentials.
@@ -43,7 +43,7 @@ Tras aplicar esto último, podremos observar en consola el link al sitio web, el
 - `REACT_APP_USER_POOL_ID`=XXX
 - `REACT_APP_CLIENT_ID`=XXX
 - `REACT_APP_API_URL`=XXX
-- `REACT_APP_GOOGLE_MAPS_API_KEY`=XXX
+- `REACT_APP_GOOGLE_MAPS_API_KEY`=XXX/api
 
 Nota: La variable REACT_APP_GOOGLE_MAPS_API_KEY es utilizada para mostrar la ubicacion de las experiencias en un mapa. Se provee el valor utilizado por nosotros "AIzaSyDYTmGoct4rNAA0rD3ZVcIqMLuu82Zruqg".
 
@@ -75,7 +75,7 @@ Módulo utilizado para configurar un User Pool para gestionar la autenticación 
 
 ### Módulo waf
 
-Módulo encargado de crear un WAF para proteger la API de posibles ataques DoS y tráfico malicioso. Este módulo implementa reglas basadas en límites de solicitudes (rate-based rules) para mitigar ataques de IPs tanto de países específicos como de otros países globalmente, permitiendo bloquear IPs que excedan los umbrales de solicitudes configurados.
+Módulo encargado de crear una Web Application Firewall (WAF) para proteger la API de posibles ataques de denegación de servicio (DoS) y tráfico malicioso. Este módulo implementa reglas basadas en límites de solicitudes (rate-based rules) para mitigar ataques de IPs tanto de países específicos como de otros países globalmente, permitiendo bloquear IPs que excedan los umbrales de solicitudes configurados.
 
 ### Módulo lambda
 

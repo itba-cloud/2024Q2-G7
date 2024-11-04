@@ -3,7 +3,7 @@ import "../common/i18n/index"
 import { useForm } from "react-hook-form"
 import React, { useEffect, useState } from "react"
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { IconButton } from "@mui/material"
+import { IconButton, CircularProgress } from "@mui/material"
 /* import ModalResetPassword from "../components/ModalResetPassword" */
 import { showToast } from "../scripts/toast"
 // @ts-ignore
@@ -31,7 +31,7 @@ export default function Login() {
     // @ts-ignore
     const from = location.state?.from?.pathname || "/";
     const [seePassword, setSeePassword] = useState(false);
-    const isOpenPassword = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [invalidCredentials, setInvalidCredendtials] = useState(false);
 
     const { register, handleSubmit } = useForm<FormDataLogin>({
@@ -43,12 +43,12 @@ export default function Login() {
     }, [])
 
     const onSubmitLogin = handleSubmit((data: FormDataLogin) => {
+        setIsLoading(true);
         setInvalidCredendtials(false);
         AuthService.login(data.email, data.password, AuthContext)
             .then((session) => {
                 console.log("session when login: ", session);
                 showToast(t('Login.toast.successEmail', {email: session?.email}), 'success')
-                //navigate(from, { replace: true })
                 navigate("/", { replace: true })
             })
             .catch((error) => {
@@ -62,6 +62,9 @@ export default function Login() {
                     showToast(t('Login.toast.error'), 'error')
                 }
             })
+            .finally(() => {
+                setIsLoading(false);
+            });
     });
 
     function showPassword() {
@@ -95,7 +98,8 @@ export default function Login() {
                                             placeholder={t('Navbar.emailPlaceholder')}
                                             className="form-control mb-2"
                                             aria-describedby="email input"
-                                            {...register("email", {})} />
+                                            {...register("email", {})} 
+                                            disabled={isLoading} />
                                     </div>
                                 </div>
 
@@ -122,13 +126,19 @@ export default function Login() {
                                             </div>
                                             <div className="col-12 px-0 d-flex justify-content-start align-items-center">
                                                 <div className="input-group d-flex justify-content-start align-items-center">
-                                                    <input type={seePassword ? "text" : "password"} className="form-control"
-                                                        id="password" aria-describedby="password input"
-                                                        {...register("password", {})} />
+                                                    <input type={seePassword ? "text" : "password"} 
+                                                        className="form-control"
+                                                        id="password" 
+                                                        aria-describedby="password input"
+                                                        {...register("password", {})} 
+                                                        disabled={isLoading} />
                                                     <div className="input-group-append">
                                                         <IconButton className="btn btn-eye input-group-text"
-                                                            id="passwordEye" type="button" tabIndex={-1} onClick={() => showPassword()}
-                                                            aria-label={t("AriaLabel.showPassword")} title={t("AriaLabel.showPassword")}>
+                                                            id="passwordEye" type="button" tabIndex={-1} 
+                                                            onClick={showPassword} 
+                                                            aria-label={t("AriaLabel.showPassword")} 
+                                                            title={t("AriaLabel.showPassword")}
+                                                            disabled={isLoading}>
                                                             {seePassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
                                                         </IconButton>
                                                     </div>
@@ -149,11 +159,13 @@ export default function Login() {
                         }
                     </div>
 
-
                     <div className="col-12 d-flex align-items-center justify-content-center">
-                        <button form="loginForm" type="submit" className="w-100 btn-login my-2"
-                            aria-label={t("AriaLabel.login")} title={t("AriaLabel.login")}>
-                            {t('Navbar.login')}
+                        <button form="loginForm" type="submit" 
+                            className="w-100 btn-login my-2" 
+                            aria-label={t("AriaLabel.login")} 
+                            title={t("AriaLabel.login")} 
+                            disabled={isLoading}>
+                            {isLoading ? <CircularProgress size={24} /> : t('Navbar.login')}
                         </button>
                     </div>
                     <div className="col-12 mt-4">
@@ -172,5 +184,4 @@ export default function Login() {
             {/* <ModalResetPassword isOpen={isOpenPassword} /> */}
         </div>
     );
-
 }

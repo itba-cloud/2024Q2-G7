@@ -5,14 +5,14 @@ import { ExperienceModel } from "../../types";
 import StarRating from "../Review/StarRating";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { IconButton } from "@mui/material";
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import { Favorite, FavoriteBorder } from "@mui/icons-material";
-import { setFavExperience } from "../../scripts/experienceOperations";
+import { setFavExperience, setRecommendedExperience } from "../../scripts/experienceOperations";
 import Price from "./Price";
 import DataLoader from "../DataLoader";
 import { showToast } from "../../scripts/toast";
 import categoryImages, { CategoryName, paths } from "../../common";
-import { serviceHandler } from "../../scripts/serviceHandler";
-import { userService } from "../../services";
 import { useAuthNew } from "../../context/AuthProvider";
 import { AuthService } from "../../services/AuthService";
 import { fetchImageUrl } from "../../scripts/getImage";
@@ -21,17 +21,21 @@ export default function CardExperience(props: {
     experience: ExperienceModel, 
     /* nameProp: [string | undefined, Dispatch<SetStateAction<string | undefined>>], */ 
     categoryProp?: [string | undefined, Dispatch<SetStateAction<string | undefined>>],
-    fav: boolean 
+    fav: boolean,
+    recommended?: boolean
 }) {
     
     const { t } = useTranslation()
-    const { experience, /* nameProp, */ categoryProp, fav } = props
+    const { experience, /* nameProp, */ categoryProp, fav, recommended } = props
     const navigate = useNavigate()
 
     const AuthContext = useAuthNew();
     const session = AuthService.getSessionFromContext(AuthContext)
+    const isAgent = AuthService.isAgent(AuthContext);
 
+    const favsCounter = useState<number>(experience.favs)
     const [isFav, setIsFav] = useState(false)
+    const [isRecommended, setIsRecommended] = useState(false)
 
     const [imageUrl, setImageUrl] = useState<string | null>(null);
     const [isLoadingImage, setIsLoadingImage] = useState(false)
@@ -47,12 +51,11 @@ export default function CardExperience(props: {
                 setIsFav(true)
             } else {
                 if (AuthService.isFavourite(AuthContext, experience.id)) setIsFav(true)
-                /* serviceHandler(
-                    userService.isExperienceFav(session.id, experience.id),
-                    navigate, (isFavResponse) => { setIsFav(isFavResponse.favourite)},
-                    () => { },
-                    () => { setIsFav(false) }
-                ) */
+            }
+            if (recommended) {
+                setIsRecommended(true)
+            } else {
+                if (AuthService.isRecommended(AuthContext, experience.id)) setIsRecommended(true)
             }
         }
     }, [])
@@ -106,41 +109,78 @@ export default function CardExperience(props: {
                     </div>
                 </div>
 
-                <div className="container-fluid d-flex p-2 mb-1 align-items-end">
-                    <h5 className="mb-0">
-                        {t('Experience.reviews', { reviewCount: experience.reviewCount })}
-                    </h5>
-                    
-                    <StarRating score={experience.score} />
+                <div className="container-fluid mb-1 d-flex justify-content-around align-items-center flex-wrap">
+                    {/* Sección de reseñas */}
+                    <div className="d-flex flex-column align-items-center justify-content-start mb-2 mb-md-0">
+                        <StarRating score={experience.score} />
+                        <span className="small-text mt-1">{experience.reviewCount}</span>
+                    </div>
 
-                    <div className="btn-fav">
-                        {session ?
-                            <div>
-                                {isFav ?
-                                    <IconButton onClick={() => setFavExperience(session.id, experience, false, setIsFav, t, AuthContext)} aria-label={t("AriaLabel.fav")} title={t("AriaLabel.fav")}>
-                                        <Favorite className="fa-heart heart-color" />
-                                    </IconButton>
-                                    :
-                                    <IconButton onClick={() => setFavExperience(session.id, experience, true, setIsFav, t, AuthContext)} aria-label={t("AriaLabel.fav")} title={t("AriaLabel.fav")}>
-                                        <FavoriteBorder className="fa-heart" />
-                                    </IconButton>
-                                }
-                            </div>
-                            :
-                            <div>
-                                <IconButton aria-label={t("AriaLabel.fav")} title={t("AriaLabel.fav")}
-                                    onClick={() => {
-                                        clearNavbar();
-                                        navigate("/login", { replace: true });
-                                        showToast(t('Experience.toast.favNotSigned'), "error")
-                                    }}>
+                    {/* Sección de favoritos */}
+                    <div className="d-flex flex-column align-items-center">
+                        {session ? (
+                            isFav ? (
+                                <IconButton
+                                    onClick={() => setFavExperience(session.id, experience, false, setIsFav, favsCounter, t, AuthContext)}
+                                    aria-label={t("AriaLabel.fav")}
+                                    title={t("AriaLabel.fav")}
+                                    className="p-0"
+                                >
+                                    <Favorite className="fa-heart heart-color" />
+                                </IconButton>
+                            ) : (
+                                <IconButton
+                                    onClick={() => setFavExperience(session.id, experience, true, setIsFav, favsCounter, t, AuthContext)}
+                                    aria-label={t("AriaLabel.fav")}
+                                    title={t("AriaLabel.fav")}
+                                    className="p-0"
+                                >
                                     <FavoriteBorder className="fa-heart" />
                                 </IconButton>
-                            </div>
-                        }
+                            )
+                        ) : (
+                            <IconButton
+                                aria-label={t("AriaLabel.fav")}
+                                title={t("AriaLabel.fav")}
+                                className="p-0"
+                                onClick={() => {
+                                    clearNavbar();
+                                    navigate("/login", { replace: true });
+                                    showToast(t('Experience.toast.favNotSigned'), "error");
+                                }}
+                            >
+                                <FavoriteBorder className="fa-heart" />
+                            </IconButton>
+                        )}
+                        <span className="small-text mt-1">{favsCounter[0]}</span>
                     </div>
-                </div>
 
+                    {/* Sección de recomendados */}
+                    {session && isAgent && (
+                        <div className="recommend-section d-flex flex-column align-items-center mt-2 mt-md-0">
+                            <button
+                                className={`btn btn-sm d-flex align-items-center ${isRecommended ? 'btn-danger' : 'btn-primary'}`}
+                                aria-label={isRecommended ? t("Agents.unrecommend") : t("Agents.recommend")}
+                                title={isRecommended ? t("Agents.unrecommend") : t("Agents.recommend")}
+                                onClick={() => {
+                                    setRecommendedExperience(session.id, experience, !isRecommended, setIsRecommended, t, AuthContext);
+                                }}
+                            >
+                                {isRecommended ? (
+                                    <>
+                                        <ThumbDownIcon className="me-1" />{/* {t("Agents.unrecommend")} */}
+                                    </>
+                                ) : (
+                                    <>
+                                        <ThumbUpIcon className="me-1" /> {/* {t("Agents.recommend")} */}
+                                    </>
+                                )}
+                            </button>
+                            {/* TODO poner esto */}
+                            {/* <span className="small-text mt-1">{experience.recommended}</span> */}
+                        </div>
+                    )}
+                </div>
                
                 {/* {!experience.observable &&
                     <div className="card-body p-0 d-flex justify-content-center">

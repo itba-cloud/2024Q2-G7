@@ -24,6 +24,15 @@ def build_response(status_code, body):
         'body': json.dumps(body, cls=DecimalEncoder)
     }
 
+def convert_sets_to_lists(data):
+    if isinstance(data, set):
+        return list(data)
+    elif isinstance(data, dict):
+        return {key: convert_sets_to_lists(value) for key, value in data.items()}
+    elif isinstance(data, list):
+        return [convert_sets_to_lists(item) for item in data]
+    return data
+
 def main(event, context):
     dynamodb = boto3.resource('dynamodb')
     table_name = os.getenv('AGENTS_TABLE_NAME', 'agents-table')
@@ -43,4 +52,5 @@ def main(event, context):
     if not items:
         return build_response(204, {})
 
+    items = convert_sets_to_lists(items)
     return build_response(200, items)

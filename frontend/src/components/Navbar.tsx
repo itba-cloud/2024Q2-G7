@@ -19,6 +19,7 @@ import ic_briefcase from "../images/ic_briefcase.svg";
 import ic_fav from "../images/ic_fav.svg";
 import ic_review from "../images/ic_review.svg";
 import ic_article from "../images/ic_article.svg";
+import ic_recommendation from "../images/ic_recommendation.svg";
 import ic_logout from "../images/ic_logout.svg";
 import categoryImages, { CategoryName } from "../common";
 import { arrCategories } from "../common/mocks";
@@ -248,7 +249,7 @@ export default function Navbar(props: {
                                 <img src={ic_user_white} alt="Icono usuario" style={{ width: "30px", height: "30px" }} />
                             </button>
 
-                            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1" style={{ left: "-50px" }}>
+                            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1" style={{ left: "-70px" }}>
                                 {!isAdmin &&
                                     <>
                                         <Link to="/user/profile" className="dropdown-item"
@@ -288,12 +289,21 @@ export default function Navbar(props: {
                                         </Link>
 
                                         {isAgent &&
-                                            <Link to="/user/articles" className="dropdown-item"
-                                                onClick={() => clearNavBar()}
-                                                >
-                                                <img src={ic_article} alt="Icono articulos" className="me-1" />
-                                                {t('Navbar.articles')}
-                                            </Link>
+                                            <> 
+                                                <Link to="/user/articles" className="dropdown-item"
+                                                    onClick={() => clearNavBar()}
+                                                    >
+                                                    <img src={ic_article} alt="Icono articulos" className="me-1" />
+                                                    {t('Navbar.articles')}
+                                                </Link>
+
+                                                <Link to="/user/recommendations" className="dropdown-item"
+                                                    onClick={() => clearNavBar()}
+                                                    >
+                                                    <img src={ic_recommendation} alt="Icono recomendados" className="me-1" />
+                                                    {t('Navbar.recommendations')}
+                                                </Link>
+                                            </>
                                         }
                                     </>
                                 }

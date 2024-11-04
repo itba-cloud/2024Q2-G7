@@ -164,7 +164,7 @@ locals {
       }
       local_secondary_indexes = [
         {
-          name            = "start_date_index"
+          name            = "ByStartDateIndex"
           range_key       = "start_date"
           projection_type = "ALL"
         }
@@ -464,7 +464,8 @@ locals {
       description = "Get trip by ID Lambda"
       runtime     = "python3.9"
       env_vars = {
-        TRIPS_TABLE_NAME = module.dynamodb["trips"].table_name
+        TRIPS_TABLE_NAME       = module.dynamodb["trips"].table_name
+        EXPERIENCES_TABLE_NAME = module.dynamodb["experiences"].table_name
       }
     },
     put_trip_by_id = {
@@ -483,12 +484,22 @@ locals {
         TRIPS_TABLE_NAME = module.dynamodb["trips"].table_name
       }
     },
+    get_trip_experiences = {
+      entity      = "trips"
+      description = "Get trip experiences Lambda"
+      runtime     = "python3.9"
+      env_vars = {
+       TRIPS_TABLE_NAME        = module.dynamodb["trips"].table_name
+        EXPERIENCES_TABLE_NAME = module.dynamodb["experiences"].table_name
+      }
+    },
     put_experience_in_trip_by_id = {
       entity      = "trips"
       description = "Add or remove experience from trip by ID Lambda"
       runtime     = "python3.9"
       env_vars = {
-        TRIPS_TABLE_NAME = module.dynamodb["trips"].table_name
+        TRIPS_TABLE_NAME       = module.dynamodb["trips"].table_name
+        EXPERIENCES_TABLE_NAME = module.dynamodb["experiences"].table_name
       }
     },
     //--------------------------------------------

@@ -1615,6 +1615,25 @@ paths:
           required: true
           schema:
             type: string
+        - name: order
+          in: query
+          description: Orden de las experiencias
+          required: false
+          schema:
+            type: string
+            enum:
+            - OrderByAZ
+            - OrderByZA
+            - OrderByLowPrice
+            - OrderByHighPrice
+            - OrderByNewest
+            - OrderByOldest
+            - OrderByPendings
+            - OrderByApproved
+            - OrderByFavsAsc
+            - OrderByFavsDesc
+            - OrderByViewsAsc
+            - OrderByViewsDesc
       responses:
         "200":
           description: Success
@@ -2408,6 +2427,129 @@ paths:
         requestTemplates:
           application/json: '{"statusCode": 200}'
 
+  /trips/{trip_id}/experiences:
+    get:
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: "${get_trip_experiences}"
+      summary: Get trip experiences by trip ID
+      description: ""
+      security:
+        - CognitoUserPoolAuthorizer: []
+      tags:
+        - Trips
+      parameters:
+        - name: trip_id
+          in: path
+          description: ID del viaje
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Experience"
+        "204":
+          description: No Content
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        "400":
+          description: Bad Request
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Forbidden
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    options:
+      tags:
+        - Trips
+      parameters:
+        - name: trip_id
+          in: path
+          description: ID del viaje
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: CORS preflight response
+          schema:
+            $ref: "#/components/schemas/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              description: Indicates whether the response can be shared with requesting code from the given origin.
+              type: string
+            Access-Control-Allow-Methods:
+              description: Specifies the methods allowed when accessing the resource.
+              type: string
+            Access-Control-Allow-Headers:
+              description: Indicates which headers can be used during the actual request.
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: never
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        requestTemplates:
+          application/json: '{"statusCode": 200}'
+
   /trips/{trip_id}/experiences/{experience_id}:
     put:
       x-amazon-apigateway-integration:
@@ -3070,7 +3212,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AgentExperienceRecommendations"
+                type: array
+                items:
+                  $ref: "#/components/schemas/Experience"
         "204":
           description: No Content
           headers:
@@ -4312,7 +4456,8 @@ components:
           pattern: "^([a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+)*$"
         price:
           type: integer
-          minimum: 0
+          #minimum: 0
+          nullable: true
         siteUrl:
           type: string
           #format: uri
@@ -4361,7 +4506,8 @@ components:
           pattern: "^([a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+)*$"
         price:
           type: integer
-          minimum: 0
+          #minimum: 0
+          nullable: true
         siteUrl:
           type: string
           #format: uri
@@ -4541,8 +4687,8 @@ components:
           type: string
         email:
           type: string
-          format: email
-          pattern: "^[\\w\\.-]+@[\\w\\.-]+\\.[a-zA-Z]{2,}$"
+          #format: email
+          pattern: "^([a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+)*$"
         phone:
           type: string
         address:
@@ -4576,8 +4722,8 @@ components:
           type: string
         email:
           type: string
-          format: email
-          pattern: "^[\\w\\.-]+@[\\w\\.-]+\\.[a-zA-Z]{2,}$"
+          #format: email
+          pattern: "^([a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+)*$"
         phone:
           type: string
         address:
@@ -4604,15 +4750,6 @@ components:
         - languages
         - experience
         - bio
-    AgentExperienceRecommendations:
-      type: object
-      properties:
-        recommended_experiences:
-          type: array
-          items:
-            $ref: "#/components/schemas/Experience"
-      required:
-        - recommended_experiences
     AgentRecommendationPut:
       type: object
       properties:
@@ -4673,12 +4810,20 @@ components:
           type: string
         end_date:
           type: string
+        user_id:
+          type: string
+        experiences:
+          type: array
+          items:
+            type: string
       required:
         - id
         - name
         - description
         - end_date
         - start_date
+        - user_id
+        - experiences
     TripPost:
       type: object
       properties:
@@ -4693,8 +4838,8 @@ components:
       required:
         - name
         - description
-        - end_date
         - start_date
+        - end_date
     TripPut:
       type: object
       properties:
@@ -4709,8 +4854,8 @@ components:
       required:
         - name
         - description
-        - end_date
         - start_date
+        - end_date
     TripPutExperience:
       type: object
       properties:

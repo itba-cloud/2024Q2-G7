@@ -3,6 +3,7 @@ import json
 import os
 from botocore.exceptions import ClientError
 from boto3.dynamodb.conditions import Key
+from boto3.dynamodb.conditions import Attr
 import base64
 from decimal import Decimal
 
@@ -164,18 +165,41 @@ def main(event, context):
     description = body.get('description')
 
     # TODO aca hay un problema si cambia la category, porque cambia la PK -> hay que eliminar e insertar devuelta
-    experience['name'] = name
-    experience['category'] = category
-    experience['city'] = city
-    experience['province'] = province
-    experience['address'] = address
-    experience['email'] = email
-    experience['price'] = price
-    experience['siteUrl'] = siteUrl
-    experience['description'] = description
-
     try:
-        table.put_item(Item=experience)
+       table.update_item(
+            Key={'category': experience['category'], 'id': experience['id']},
+            UpdateExpression="""
+                SET #name = :name,
+                    #city = :city,
+                    #province = :province,
+                    #address = :address,
+                    #email = :email,
+                    #price = :price,
+                    #siteUrl = :siteUrl,
+                    #description = :description
+            """, 
+            ExpressionAttributeValues={  
+                ':name': name,
+                ':city': city,
+                ':province': province,
+                ':address': address,
+                ':email': email,
+                ':price': price,
+                ':siteUrl': siteUrl,
+                ':description': description
+            },
+            ExpressionAttributeNames={  
+                '#name': "name",
+                '#city': "city",
+                '#province': "province",
+                '#address': "address",
+                '#email': "email",
+                '#price': "price",
+                '#siteUrl': "siteUrl",
+                '#description': "description"
+            },
+            ConditionExpression=Attr('id').exists() & Attr('name').exists() & Attr('category').exists() & Attr('city').exists() & Attr('province').exists() & Attr('address').exists() & Attr('email').exists()
+        )
     except ClientError as e:
         return build_response(500, {'error': f'Failed to update experience: {str(e)}'})
     

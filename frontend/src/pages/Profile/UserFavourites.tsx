@@ -10,11 +10,11 @@ import Pagination from "../../components/Pagination"
 import OrderDropdown from "../../components/OrderDropdown"
 import DataLoader from "../../components/DataLoader"
 import { getQueryOrDefault, useQuery } from "../../hooks/useQuery"
-import { arrExp, arrOrders } from "../../common/mocks"
 import { validatePage } from "../../scripts/validations"
 import { useAuthNew } from "../../context/AuthProvider"
 import { AuthService } from "../../services/AuthService"
 import ic_no_search from "../../images/ic_no_search.jpeg";
+import { arrayOrders } from "../../common"
 
 export default function UserFavourites() {
 
@@ -30,7 +30,7 @@ export default function UserFavourites() {
     const [favExperiences, setFavExperiences] = useState<ExperienceModel[]>(new Array(0))
     const [isLoading, setIsLoading] = useState(false)
 
-    const [orders, setOrders] = useState<OrderByModel>(arrOrders)
+    const [orders, setOrders] = useState<OrderByModel>(arrayOrders)
     const order = useState<string>(getQueryOrDefault(query, "order", "OrderByAZ"))
 
     const [maxPage, setMaxPage] = useState(0)

@@ -121,6 +121,7 @@ export default function ExperienceDetails() {
                     navigate(`/experiences/${parsedExperienceId}`, { replace: true })
                     showToast(t('Review.toast.createSuccess', { reviewTitle: data.title }), 'success')
                 }
+                if (result.getStatusCode() === 400) showToast(t('Review.toast.alreadyCreate'), 'error')
             })
             .catch(() => {
                 showToast(t('Review.toast.createError', { reviewTitle: data.title }), 'error')
@@ -137,7 +138,7 @@ export default function ExperienceDetails() {
                 <DataLoader spinnerMultiplier={2} isLoading={isLoading && isLoadingReviews}>
                     <div></div>
                 </DataLoader>
-             : 
+            : 
                 <div className={`container-fluid px-5 d-flex flex-column ${showModalReview ? 'modal-open' : ''}`}>
                     <div className="content-blur d-flex flex-column flex-md-row flex-fill" style={{ overflow: 'hidden' }}>
                         
@@ -211,6 +212,7 @@ export default function ExperienceDetails() {
                             review={undefined}
                             onSave={handleCreateReview}
                             onCancel={handleCancelReview}
+                            experience={experience}
                         />
                     )}
                 </div>

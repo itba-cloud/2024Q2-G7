@@ -4,6 +4,7 @@ from decimal import Decimal
 import os
 from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
+from boto3.dynamodb.conditions import Attr
 import base64
 import hashlib
 import json
@@ -17,15 +18,16 @@ class DecimalEncoder(json.JSONEncoder):
 def validate_body_params(body):
     errors = []
     name = body.get('name')
-    start_date = body.get('startDate')
-    end_date = body.get('endDate')
+    description = body.get('description')
+    start_date = body.get('start_date')
+    end_date = body.get('end_date')
 
     if name is None:
         errors.append("Name is required")
-
+    if description is None:
+        errors.append("Description is required")
     if start_date is None:
         errors.append("Start date is required")
-
     if end_date is None:
         errors.append("End date is required")
 
@@ -57,10 +59,7 @@ def check_trip_exists(user_id, id):
 
     try:
         response = table.get_item(
-            Key={
-                'user_id': user_id,
-                'id': id
-            }
+            Key={ 'user_id': user_id, 'id': id }
         )
         return 'Item' in response
     except ClientError as e:
@@ -93,7 +92,6 @@ def main(event, context):
         return build_response(401, {'error': str(e)})
 
     trip = check_trip_exists(decoded_token['sub'], trip_id)
-
     if not trip:
         return build_response(404, {'error': 'Trip not found'})
 
@@ -116,28 +114,37 @@ def main(event, context):
     table = dynamodb.Table(table_name)
 
     name = body.get('name')
-    start_date = body.get('startDate')
-    end_date = body.get('endDate')
     description = body.get('description')
-
-    trip_item = {
-        'user_id': trip['user_id'],  
-        'id': trip_id,  
-        'name': name,
-        'start_date': start_date,
-        'end_date': end_date,
-        'description': description,
-        'experiences': trip['experiences']
-    }
+    start_date = body.get('start_date')
+    end_date = body.get('end_date')
 
     try:
-        table.put_item(Item=trip_item)
+        table.update_item(
+            Key={'user_id': trip['user_id'], 'id': trip['id']},
+            UpdateExpression="""
+                SET #name = :name,
+                    #description = :description,
+                    #start_date = :start_date,
+                    #end_date = :end_date
+            """,
+            ExpressionAttributeValues={
+                ':name': name,
+                ':description': description,
+                ':start_date': start_date,
+                ':end_date': end_date
+            },
+            ExpressionAttributeNames={
+                '#name': "name",
+                '#description': "description",
+                '#start_date': "start_date",
+                '#end_date': "end_date"
+            },
+            ConditionExpression=Attr('id').exists() & Attr('name').exists() & Attr('description').exists() & Attr('start_date').exists() & Attr('end_date').exists()
+        )
     except ClientError as e:
-        return build_response(500, {'error': f'Failed to create trip: {str(e)}'})
+        return build_response(500, {'error': f'Failed to update trip: {str(e)}'})
 
-    try:
-        table.put_item(Item=trip_item)
-
-        return True, None  
-    except ClientError as e:
-        return False, str(e)
+    return build_response(200, {
+        'message': 'Trip updated successfully',
+        'id': trip['id']
+    })

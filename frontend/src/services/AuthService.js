@@ -38,13 +38,29 @@ export class AuthService {
         } 
     }
 
+    static async _getRecommended(id) {
+        try {
+            const response  = await authedFetch(paths.API_URL + paths.AGENTS + `/${id}/recommendations`, { method: "GET" })
+            if (response.status === 200) {
+                const data = await response.json();
+                return data || [];
+            } 
+            return [];
+        } catch (error) {
+            console.log("_getRecommended - ERROR: ", error)
+            return false
+        } 
+    }
+
     static async _createSessionFromCognitoSession(session) {
         const id = session["idToken"]["payload"]["sub"]
         let isAgent = false
         let favourites = []
+        let recommended = []
         if (session["idToken"]["payload"]["custom:role"] !== 'admin') {
             isAgent = await this._isAgent(id)
             favourites = await this._getFavourites(id)
+            if (isAgent) recommended = await this._getRecommended(id)
         }
         return {
             idToken: session["idToken"]["jwtToken"],
@@ -54,7 +70,8 @@ export class AuthService {
             role: session["idToken"]["payload"]["custom:role"],
             email: session["idToken"]["payload"]["email"],
             isAgent: isAgent,
-            favourites: favourites
+            favourites: favourites,
+            recommended: recommended
         };
     }
 
@@ -113,11 +130,11 @@ export class AuthService {
         try {
             const data = await authenticate(email, password);
             if (data) {
+                localStorage.setItem('getawayIdToken', data["idToken"]["jwtToken"])
+                localStorage.setItem('getawayAccessToken', data["accessToken"]["jwtToken"])
+                localStorage.setItem('getawayRefreshToken', data["refreshToken"]["token"])
                 const session = await this._createSessionFromCognitoSession(data);
                 AuthContext.setSession(session);
-                localStorage.setItem('getawayIdToken', session.idToken)
-                localStorage.setItem('getawayAccessToken', session.accessToken)
-                localStorage.setItem('getawayRefreshToken', session.refreshToken)
                 return session;
             }
         } catch (error) {
@@ -127,7 +144,7 @@ export class AuthService {
     }
 
     static async logout(AuthContext) {
-        axios.defaults.headers.common["Authorization"] = null;
+        //axios.defaults.headers.common["Authorization"] = null;
         AuthContext.setSession(null);
         localStorage.removeItem('getawayRefreshToken')
         localStorage.removeItem('getawayAccessToken')
@@ -208,6 +225,38 @@ export class AuthService {
         return AuthContext.session.favourites.some(fav => fav.id === experienceId);
     }
 
+    static getRecommended(AuthContext) {
+        return AuthContext.session ? AuthContext.session.recommended : [];
+    }
+
+    static updateRecommended(AuthContext, experience, set) {
+        if (!AuthContext.session) return;
+        const currentRecommended = AuthContext.session.recommended || [];
+        let updatedRecommended;
+        const experienceId = experience.id;
+
+        if (set) {
+            if (!currentRecommended.some(recommended => recommended.id ===  experienceId)) {
+                updatedRecommended = [...currentRecommended, experience];
+            } else {
+                updatedRecommended = currentRecommended;
+            }
+        } else {
+            updatedRecommended = currentRecommended.filter(recommended => recommended.id !== experienceId);
+        }
+
+        AuthContext.setSession({
+            ...AuthContext.session,
+            recommended: updatedRecommended,
+        });
+    }
+
+    static isRecommended(AuthContext, experienceId) {
+        if (!AuthContext.session || !AuthContext.session.recommended) {
+            return false;
+        }
+        return AuthContext.session.recommended.some(recommended => recommended.id === experienceId);
+    }
 
     /* static setAuth(AuthContext) {
         if (AuthContext && AuthContext.auth) {

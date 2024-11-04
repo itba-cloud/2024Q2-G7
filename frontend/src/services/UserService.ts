@@ -196,6 +196,10 @@ export class UserService {
         })
     }
 
+    //------------------------------------------------------------------
+    //-----------------------------TRIPS--------------------------------
+    //------------------------------------------------------------------
+
     public async createUserTrip(
         userId: string,
         name: string,
@@ -206,9 +210,9 @@ export class UserService {
         const url = new URL(this.tripsBasePath);
         const tripBody = JSON.stringify({
             name: name,
-            startDate: startDate,
-            endDate: endDate,
-            description: description
+            description: description,
+            start_date: startDate,
+            end_date: endDate
         });
 
         return resultFetch(url.toString(), {
@@ -251,9 +255,9 @@ export class UserService {
         const url = new URL(this.tripsBasePath + `/${tripId}`);
         const tripBody = JSON.stringify({
             name: name,
-            startDate: startDate,
-            endDate: endDate,
-            description: description
+            description: description,
+            start_date: startDate,
+            end_date: endDate
         });
 
         return resultFetch<PutResponse>(url.toString(), {
@@ -272,6 +276,16 @@ export class UserService {
         const url = new URL(this.tripsBasePath + `/${tripId}`);
         return resultFetch(url.toString(), {
             method: "DELETE",
+        });
+    }
+
+    public async getTripExperiences(
+        userId: string,
+        tripId: string,
+    ): Promise<Result<ExperienceModel[]>> {
+        const url = new URL(this.tripsBasePath + `/${tripId}/experiences`);
+        return resultFetch<ExperienceModel[]>(url.toString(), {
+            method: "GET"
         });
     }
 

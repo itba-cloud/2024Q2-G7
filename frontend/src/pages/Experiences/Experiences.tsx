@@ -13,8 +13,8 @@ import DataLoader from "../../components/DataLoader"
 import { getQueryOrDefault, useQuery } from "../../hooks/useQuery"
 import StarRoundedIcon from "@mui/icons-material/StarRounded"
 import ic_no_search from "../../images/ic_no_search.jpeg";
-import { arrExp, arrOrders } from "../../common/mocks"
 import { validatePage } from "../../scripts/validations"
+import { arrayOrders } from "../../common"
 
 export default function Experiences(props: { 
     /* nameProp: [string | undefined, Dispatch<SetStateAction<string | undefined>>], */
@@ -58,7 +58,7 @@ export default function Experiences(props: {
             0
     )
     //Order
-    const [orders, setOrders] = useState<OrderByModel>(arrOrders)
+    const [orders, setOrders] = useState<OrderByModel>(arrayOrders)
     const order = useState<string>(getQueryOrDefault(query, "order", "OrderByAZ"))
     //Page
     const [maxPage, setMaxPage] = useState(0)

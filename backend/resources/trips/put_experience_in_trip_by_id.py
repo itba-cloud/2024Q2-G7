@@ -17,11 +17,12 @@ def check_experience_exists(experience_id):
     dynamodb = boto3.resource('dynamodb')
     experience_table = os.getenv('EXPERIENCES_TABLE_NAME', 'experiences-table')
     table = dynamodb.Table(experience_table)
+    STATUS = 'VERIFIED'
 
     try:
         response = table.query(
             IndexName='ByStatusIndex',
-            KeyConditionExpression=Key('status').eq('VERIFIED') & Key('id').eq(experience_id)
+            KeyConditionExpression=Key('status').eq(STATUS) & Key('id').eq(experience_id)
         )
         if 'Items' in response and len(response['Items']) > 0:
             return response['Items'][0]
@@ -31,14 +32,16 @@ def check_experience_exists(experience_id):
     
 def check_trip_exists(user_id, trip_id):
     dynamodb = boto3.resource('dynamodb')
-    experience_table = os.getenv('TRIPS_TABLE_NAME', 'trips-table')
-    table = dynamodb.Table(experience_table)
+    trips_table = os.getenv('TRIPS_TABLE_NAME', 'trips-table')
+    table = dynamodb.Table(trips_table)
 
     try:
-        response = table.get_item(Key={ 'user_id': user_id, 'id': trip_id })
+        response = table.get_item(
+            Key={ 'user_id': user_id, 'id': trip_id }
+        )
         return response.get('Item', None)
     except Exception as e:
-        return build_response(500, {'error': f'Failed to get experience: {str(e)}'})
+        return build_response(500, {'error': f'Failed to get trip: {str(e)}'})
 
 
 def build_response(status_code, body):
@@ -94,32 +97,28 @@ def main(event, context):
     except json.JSONDecodeError:
         return build_response(400, {'error': 'Invalid JSON format'})
 
-    #TODO check value in frontend
-    set = body.get('set')
-
     if not trip_id:
         return build_response(400, {'error': 'Trip ID parameter is required'})
-
     trip = check_trip_exists(user_id, trip_id)
-
     if trip is None:
-        return build_response(404, {'error': 'Experience not found'})
+        return build_response(404, {'error': 'Trip not found'})
 
     if not experience_id:
         return build_response(400, {'error': 'Experience ID parameter is required'})
-
     experience = check_experience_exists(experience_id)
     if experience is None:
         return build_response(404, {'error': 'Experience not found'})
+    
+    set_value = bool(body.get('set'))
     
     dynamodb = boto3.resource('dynamodb')
     table_name = os.getenv('TRIPS_TABLE_NAME', 'trips-table')
     table = dynamodb.Table(table_name)
 
-    if set  == 'true':
+    if set_value:
         try:
             table.update_item(
-                Key={ 'user_id': user_id, 'id': trip_id},
+                Key={ 'user_id': user_id, 'id': trip_id },
                 UpdateExpression='ADD experiences :experience_id',
                 ExpressionAttributeValues={':experience_id': set([experience_id])},
                 ReturnValues="UPDATED_NEW"

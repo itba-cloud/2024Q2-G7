@@ -2,20 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-type FormDataTrip = {
+export type FormDataTrip = {
     name: string,
-    startDate: string,
-    endDate: string,
+    start_date: string,
+    end_date: string,
     description: string
 };
 
 interface TripFormProps {
-    trip?: {
-        name?: string;
-        startDate?: string;
-        endDate?: string;
-        description?: string;
-    };
+    trip: FormDataTrip | undefined;
     onSave: (trip: FormDataTrip) => void;
     onCancel: () => void;
     onEdit: boolean;
@@ -25,9 +20,9 @@ const TripForm: React.FC<TripFormProps> = ({ trip, onSave, onCancel, onEdit }) =
     const { t } = useTranslation();
     
     const [name, setName] = useState(trip?.name || '');
-    const [startDate, setStartDate] = useState(trip?.startDate || '');
-    const [endDate, setEndDate] = useState(trip?.endDate || '');
     const [description, setDescription] = useState(trip?.description || '');
+    const [startDate, setStartDate] = useState(trip?.start_date || '');
+    const [endDate, setEndDate] = useState(trip?.end_date || '');
 
     const { register, handleSubmit, reset, setValue, formState: { errors }, }
         = useForm<FormDataTrip>({ criteriaMode: "all" })
@@ -35,15 +30,20 @@ const TripForm: React.FC<TripFormProps> = ({ trip, onSave, onCancel, onEdit }) =
     useEffect(() => {
         if (trip) {
             setName(trip.name || '');
-            setStartDate(trip.startDate || '');
-            setEndDate(trip.endDate || '');
             setDescription(trip.description || '');
+            setStartDate(trip.start_date || '');
+            setEndDate(trip.end_date || '');
         }
     }, [trip]);
 
     const onSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const trip: FormDataTrip = { name, startDate, endDate, description }
+        const trip: FormDataTrip = { 
+            name: name, 
+            description: description,
+            start_date: startDate, 
+            end_date: endDate
+        }
         onSave(trip);
         //TODO
     };

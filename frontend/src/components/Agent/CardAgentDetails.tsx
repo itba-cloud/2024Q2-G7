@@ -6,16 +6,20 @@ import { fetchImageUrl } from "../../scripts/getImage";
 import { useEffect, useState } from "react";
 import { paths } from "../../common";
 import ic_user_no_image from "../../images/ic_user_no_image.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { serviceHandler } from "../../scripts/serviceHandler";
+import { agentsService } from "../../services";
 
 export default function CardAgentDetails(props: { 
     agent: AgentModel,
 }) {
 
+    const navigate = useNavigate()
     const { agent } = props
     const { t } = useTranslation()
 
     const [imageUrl, setImageUrl] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false)
     const [isLoadingImage, setIsLoadingImage] = useState(false)
 
     const [recommendedExperiences, setRecommendedExperiences] = useState<ExperienceModel[]>(new Array(0));
@@ -26,7 +30,15 @@ export default function CardAgentDetails(props: {
             setImageUrl,
             setIsLoadingImage
         )
-        //TODO obtener recommendedExperiences 
+        setIsLoading(true)
+        serviceHandler(
+            agentsService.getAgentRecommendations(agent.id),
+            navigate, (recommended) => {
+                setRecommendedExperiences(recommended)
+            },
+            () => { setIsLoading(false) },
+            () => { setRecommendedExperiences(new Array(0)) }
+        )
     }, [])
 
     return (
@@ -82,7 +94,7 @@ export default function CardAgentDetails(props: {
 
             {recommendedExperiences.length !== 0 &&
                 <div className="mb-3">
-                    <h2 className="fs-5 text-decoration-underline">{t('Agents.tours')}</h2>
+                    <h2 className="fs-5 text-decoration-underline">{t('Agents.recommended')}</h2>
                     <ul className="list-group">
                         {recommendedExperiences.map((experience: ExperienceModel) => (
                             <Link to={"/experiences/" + experience.id} state={{ experience }}>
@@ -94,16 +106,6 @@ export default function CardAgentDetails(props: {
                     </ul>
                 </div>
             }
-
-            {/* TODO SACAR */}
-            <div className="mb-3">
-                <h2 className="fs-5 text-decoration-underline">{t('Agents.tours')}</h2>
-                <ul className="list-group">
-                    <li className="list-group-item">Tour a la Patagonia</li>
-                    <li className="list-group-item">Tour por los glaciares</li>
-                    <li className="list-group-item">Tour por la ciudad</li>
-                </ul>
-            </div>
         </div>
     );
 }

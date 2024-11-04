@@ -39,10 +39,7 @@ def check_trip_exists(user_id, id):
 
     try:
         response = table.get_item(
-            Key={
-                'user_id': user_id,
-                'id': id
-            }
+            Key={ 'user_id': user_id, 'id': id }
         )
         return 'Item' in response
     except ClientError as e:

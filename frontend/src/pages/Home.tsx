@@ -29,7 +29,9 @@ export default function Home() {
                         {isAdmin ?
                             <HomeAdmin/>
                             :
-                            <HomeTurist/>
+                            /* TODO poner esto cuando tengamos recomendados */
+                            /* <HomeTurist/> */
+                            <HomeAnonymous/>
                         }
                     </>
                     :

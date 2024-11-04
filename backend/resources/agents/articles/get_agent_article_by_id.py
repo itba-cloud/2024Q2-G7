@@ -42,11 +42,11 @@ def main(event, context):
             Key={'agent_id': agent_id, 'id': article_id}
         )
 
-        agent = response.get('Item', None)  
-        if agent == None:
+        article = response.get('Item', None)  
+        if article == None:
             return build_response(404, {'error': 'Article not found'})
         
-        return build_response(200, agent)
+        return build_response(200, article)
 
     except Exception as e:
-        return build_response(500, {'error': f'Failed to get agent: {str(e)}'})
+        return build_response(500, {'error': f'Failed to get article: {str(e)}'})

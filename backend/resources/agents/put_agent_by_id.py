@@ -157,7 +157,7 @@ def main(event, context):
                     #agency = :agency,
                     #specialization = :specialization,
                     #twitter = :twitter,
-                    #instagram = :instagram,
+                    #instagram = :instagram
             """, 
             ExpressionAttributeValues={  
                 ':name': name,

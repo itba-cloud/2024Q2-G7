@@ -32,35 +32,55 @@ def decode_jwt(token):
     except Exception as e:
         raise Exception(f"Error decoding token: {str(e)}")
     
-def check_agent_exists(agent_id):
+def check_trip_exists(user_id, trip_id):
     dynamodb = boto3.resource('dynamodb')
-    table_name = os.getenv('AGENTS_TABLE_NAME', 'agents-table')
+    table_name = os.getenv('TRIPS_TABLE_NAME', 'trips-table')
     table = dynamodb.Table(table_name)
-    STATUS = 'VERIFIED'
 
     try:
         response = table.get_item(
-            Key={ 'status': STATUS, 'id': agent_id }
+            Key={ 'user_id': user_id, 'id': trip_id }
         )
-        agent_item = response.get('Item')
-        return bool(agent_item), agent_item
+        trip_item = response.get('Item')
+        return bool(trip_item), trip_item
     except ClientError as e:
-        return build_response(500, {'error': f'Failed to check agent existence: {str(e)}'})
+        return build_response(500, {'error': f'Failed to check trip existence: {str(e)}'})
 
 def main(event, context):
-    path_params = event.get('pathParameters') or {}
-    agent_id = path_params.get('agent_id')
+    headers = event['headers']
+    if not headers:
+        return build_response(401, {'error': 'Authorization header missing'})
 
-    if not agent_id:
+    auth_header = headers.get('Authorization', '')
+    if not auth_header:
+        return build_response(401, {'error': 'Authorization header missing'})
+
+    # "Bearer <token>"
+    token_parts = auth_header.split(' ')
+    if len(token_parts) != 2 or token_parts[0].lower() != 'bearer':
+        return build_response(401, {'error': 'Invalid Authorization header format'})
+
+    token = token_parts[1]
+    try:
+        decoded_token = decode_jwt(token)
+    except Exception as e:
+        return build_response(401, {'error': str(e)})
+    
+    user_id = decoded_token['sub']
+
+    path_params = event.get('pathParameters') or {}
+    trip_id = path_params.get('trip_id')
+
+    if not trip_id:
         return build_response(400, {'error': 'Agent ID parameter is required'})
 
-    agent_exists, agent = check_agent_exists(agent_id)
-    if not agent_exists:
-        return build_response(404, {'error': 'Agent not found'})
+    trip_exists, trip = check_trip_exists(user_id, trip_id)
+    if not trip_exists:
+        return build_response(404, {'error': 'Trip not found'})
 
-    experience_ids = list(agent.get('recommended_experiences', set()))  # Convertimos el set a lista
+    experience_ids = list(trip.get('experiences', set()))  # Convertimos el set a lista
     
-    recommended = []
+    experiences = []
     
     dynamodb = boto3.resource('dynamodb')
     experiences_table = os.getenv('EXPERIENCES_TABLE_NAME', 'experiences-table')
@@ -75,8 +95,8 @@ def main(event, context):
             )
             
             if 'Items' in response and len(response['Items']) > 0:
-                recommended.append(response['Items'][0]) 
+                experiences.append(response['Items'][0]) 
         except Exception as e:
-            return build_response(500, {'error': f'Failed to get agent recommended experiences: {str(e)}'})
+            return build_response(500, {'error': f'Failed to get trip experiences: {str(e)}'})
 
-    return build_response(200, recommended)
+    return build_response(200, experiences)

@@ -4,6 +4,7 @@ import Historico from "../images/Historico.svg";
 import Hoteleria from "../images/Hoteleria.svg";
 import Relax from "../images/Relax.svg";
 import Vida_nocturna from "../images/Vida_nocturna.svg";
+import { OrderByModel } from "../types";
 
 export const cognito = {
     USER_POOL_ID: process.env.REACT_APP_USER_POOL_ID!,
@@ -57,3 +58,33 @@ const categoryImages: Record<CategoryName, any> = {
 };
 
 export default categoryImages;
+
+export const arrayOrders: OrderByModel = {
+    orders: [
+        "OrderByRankAsc", 
+        "OrderByRankDesc", 
+        "OrderByAZ", 
+        "OrderByZA", 
+        "OrderByLowPrice", 
+        "OrderByHighPrice", 
+        "OrderByNewest", 
+        "OrderByOldest"
+    ],
+};
+
+export const arrayOrdersUser: OrderByModel = {
+    orders: [
+        'OrderByAZ',
+        'OrderByZA',
+        'OrderByLowPrice', 
+        'OrderByHighPrice', 
+        'OrderByNewest', 
+        'OrderByOldest', 
+        'OrderByFavsAsc',
+        'OrderByFavsDesc',
+        'OrderByViewsAsc',
+        'OrderByViewsDesc',
+        'OrderByPendings',
+        'OrderByApproved',
+    ],
+};

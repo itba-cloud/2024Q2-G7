@@ -2,9 +2,7 @@ import json
 import boto3
 from decimal import Decimal
 import os
-from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
-import base64
 import json
 
 class DecimalEncoder(json.JSONEncoder):

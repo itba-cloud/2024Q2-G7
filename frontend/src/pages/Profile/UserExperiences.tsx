@@ -22,10 +22,10 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import ic_lupa from "../../images/ic_lupa.svg";
 import ic_no_search from "../../images/ic_no_search.jpeg";
-import { arrExp, arrOrders } from "../../common/mocks";
 import { validatePage } from "../../scripts/validations";
 import { useAuthNew } from "../../context/AuthProvider";
 import { AuthService } from "../../services/AuthService";
+import { arrayOrdersUser } from "../../common";
 
 type FormUserExperiencesSearch = {
     name: string
@@ -50,7 +50,7 @@ export default function UserExperiences() {
 
     const [userName, setUserName] = useState("")
 
-    const [orders, setOrders] = useState<OrderByModel>(arrOrders)
+    const [orders, setOrders] = useState<OrderByModel>(arrayOrdersUser)
     const order = useState<string>(getQueryOrDefault(query, "order", "OrderByAZ"))
 
     const [maxPage, setMaxPage] = useState(0)
@@ -128,13 +128,13 @@ export default function UserExperiences() {
                                 <OrderDropdown orders={orders} order={order} currentPage={currentPage} />
                             </div>
 
-                            <h3 className="title m-0">
+                            <h3 className="title m-0 align-self-center">
                                 {t('User.experiencesTitle')}
                             </h3>
 
                             <div className="d-flex justify-content-center align-content-center"
                                 style={{ margin: "0 20px 0 auto", flex: "1" }}>
-                                <button className="btn btn-search-navbar p-0" type="submit"
+                                {/* <button className="btn btn-search-navbar p-0" type="submit"
                                     form="searchExperiencePrivateForm" aria-label={t("AriaLabel.search")} title={t("AriaLabel.search")}>
                                     <img src={ic_lupa} alt="Icono lupa" />
                                 </button>
@@ -162,11 +162,11 @@ export default function UserExperiences() {
                                 </form>
                                 <IconButton onClick={resetForm} aria-label={t("AriaLabel.closeForm")} title={t("AriaLabel.closeForm")}>
                                     <Close />
-                                </IconButton>
+                                </IconButton> */}
                             </div>
                         </div>
 
-                        <div className="mt-4 mx-5">
+                        <div className="mx-5">
                             {userExperiences.length === 0 ?
                                 <div className="my-auto mx-5 px-3 d-flex justify-content-center align-content-center">
                                     <div className="d-flex justify-content-center align-content-center">

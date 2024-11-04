@@ -70,6 +70,9 @@ export default function UserExperiencesTableRow(props: {
                 {experience.views}
             </td>
             <td>
+                {experience.favs}
+            </td>
+            <td>
                 {view ? (
                     <IconButton
                         className="icon-button visibility"

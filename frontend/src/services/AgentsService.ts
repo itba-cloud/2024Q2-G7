@@ -1,5 +1,5 @@
 import { APPLICATION_JSON_TYPE, paths } from "../common";
-import { AgentModel, ArticleModel, PagedContent, PostResponse, PutResponse, Result } from "../types";
+import { AgentModel, ArticleModel, ExperienceModel, PagedContent, PostResponse, PutResponse, Result } from "../types";
 import { resultFetch } from "../scripts/resultFetch";
 import { getPagedFetch } from "../scripts/getPagedFetch";
 
@@ -160,4 +160,63 @@ export class AgentsService {
         return resultFetch<ArticleModel[]>(url.toString(), {method: "GET",});
     }
 
+    public async getArticleById(
+        agentId: string,
+        articleId: string,
+    ): Promise<Result<ArticleModel>> {
+        const url = new URL(this.agentsBasePath + `/${agentId}/articles/${articleId}`);
+        return resultFetch<ArticleModel>(url.toString(), {method: "GET",});
+    }
+
+    public async editArticle(
+        title: string,
+        description: string,
+        agentId: string,
+        articleId: string,
+    ) {
+        const articleToUpdate = JSON.stringify({
+            title: title,
+            description: description,
+        });
+
+        return resultFetch(this.agentsBasePath + `/${agentId}/articles/${articleId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": APPLICATION_JSON_TYPE,
+            },
+            body: articleToUpdate,
+        });
+    }
+
+    //------------------------------------------------------------------
+    //-------------------RECOMMENDATIONS--------------------------------------
+    //------------------------------------------------------------------
+
+    public async getAgentRecommendations(
+        agentId: string,
+    ): Promise<Result<ExperienceModel[]>> {
+        const url = new URL(this.agentsBasePath + `/${agentId}/recommendations`);
+        return resultFetch<ExperienceModel[]>(url.toString(), {
+            method: "GET"
+        });
+    }
+
+    public async setExperienceRecommendation(
+        agentId: string,
+        experienceId: string,
+        set?: boolean
+    ) {
+        const url = new URL(this.agentsBasePath + `/${agentId}/recommendations/${experienceId}`);
+        const recommendBody = JSON.stringify({
+            recommend: set
+        });
+
+        return resultFetch(url.toString(), {
+            method: "PUT",
+            headers: {
+                "Content-Type": APPLICATION_JSON_TYPE,
+            },
+            body: recommendBody,
+        });
+    }
 }

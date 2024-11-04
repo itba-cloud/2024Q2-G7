@@ -96,7 +96,6 @@
 }
 
 .button-add-to-trips {
-    font-size: large !important;
     font-weight: bold !important;
     color: white !important;
     border-color: var(--primary-color) !important;

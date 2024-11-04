@@ -6,6 +6,7 @@ from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
 import base64
 import json
+from datetime import datetime
 
 class DecimalEncoder(json.JSONEncoder):
     def default(self, o):
@@ -51,6 +52,8 @@ def check_user_exists(user_id):
 def main(event, context):
     path_params = event.get('pathParameters') or {}
     user_id = path_params.get('user_id')
+    query_params = event.get('queryStringParameters') or {}
+    order = query_params.get('order')
 
     if not user_id:
         return build_response(400, {'error': 'User ID parameter is required'})
@@ -96,5 +99,31 @@ def main(event, context):
 
     if not experiences:
         return build_response(204, {})
+    
+    # Sort the experiences based on the order parameter
+    if order == 'OrderByAZ':
+        experiences = sorted(experiences, key=lambda x: x.get('name', ''))
+    elif order == 'OrderByZA':
+        experiences = sorted(experiences, key=lambda x: x.get('name', ''), reverse=True)
+    elif order == 'OrderByLowPrice':
+        experiences = sorted(experiences, key=lambda x: x.get('price', 0))
+    elif order == 'OrderByHighPrice':
+        experiences = sorted(experiences, key=lambda x: x.get('price', 0), reverse=True)
+    elif order == 'OrderByNewest':
+        experiences = sorted(experiences, key=lambda x: datetime.strptime(x.get('timestamp', ''), "%d-%m-%Y %H:%M:%S"), reverse=True)
+    elif order == 'OrderByOldest':
+        experiences = sorted(experiences, key=lambda x: datetime.strptime(x.get('timestamp', ''), "%d-%m-%Y %H:%M:%S"))
+    elif order == 'OrderByPendings':
+        experiences = sorted(experiences, key=lambda x: x.get('status') == 'PENDING', reverse=True)
+    elif order == 'OrderByApproved':
+        experiences = sorted(experiences, key=lambda x: x.get('status') == 'VERIFIED', reverse=True)
+    elif order == 'OrderByFavsAsc':
+        experiences = sorted(experiences, key=lambda x: x.get('favs', 0))
+    elif order == 'OrderByFavsDesc':
+        experiences = sorted(experiences, key=lambda x: x.get('favs', 0), reverse=True)
+    elif order == 'OrderByViewsAsc':
+        experiences = sorted(experiences, key=lambda x: x.get('views', 0))
+    elif order == 'OrderByViewsDesc':
+        experiences = sorted(experiences, key=lambda x: x.get('views', 0), reverse=True)
 
     return build_response(200, experiences)
